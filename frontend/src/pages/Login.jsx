@@ -1,12 +1,40 @@
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { login } from "../api/auth";;
 
 const Login = () => {
-
   const navigate = useNavigate();
 
-  return (
+  // ✅ STATE (MISSING BEFORE)
+  const [form, setForm] = useState({
+    email: "",
+    password: ""
+  });
 
+  // ✅ INPUT HANDLER
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleLogin = async () => {
+    try {
+      const res = await login(form);
+
+      console.log(res.data);
+
+      localStorage.setItem("token", res.data.token);
+
+      navigate("/");
+    } catch (err) {
+      console.log(err.response?.data);
+    }
+  };
+
+  return (
     <div className="min-h-screen bg-[#F9FBF8] flex items-center justify-center px-6 py-6">
 
       {/* MAIN CONTAINER */}
@@ -21,36 +49,28 @@ const Login = () => {
             className="w-full h-full object-cover"
           />
 
-          {/* OVERLAY */}
           <div className="absolute inset-0 bg-green-900/45"></div>
 
-          {/* TEXT */}
           <div className="absolute bottom-10 left-8 right-8 text-white">
 
             <h2 className="text-4xl font-bold leading-tight">
 
-              “The best time to plant a tree was
-              20 years ago. The second best time is now.”
+              “The best time to plant a tree was 20 years ago. The second best time is now.”
 
             </h2>
 
           </div>
-
         </div>
 
         {/* RIGHT SIDE */}
         <div className="px-10 py-8 flex flex-col justify-center">
 
           <h1 className="text-4xl font-bold text-gray-900">
-
             Welcome Back!
-
           </h1>
 
           <p className="text-gray-500 mt-2 text-base">
-
             Login to access your plant care guide.
-
           </p>
 
           {/* FORM */}
@@ -58,19 +78,17 @@ const Login = () => {
 
             {/* EMAIL */}
             <div>
-
               <label className="text-gray-700 font-medium">
-
                 Email
-
               </label>
 
               <input
-                type="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
                 placeholder="Enter your email"
                 className="w-full mt-2 p-4 border border-gray-300 rounded-2xl outline-none focus:border-green-600"
               />
-
             </div>
 
             {/* PASSWORD */}
@@ -79,32 +97,31 @@ const Login = () => {
               <div className="flex items-center justify-between">
 
                 <label className="text-gray-700 font-medium">
-
                   Password
-
                 </label>
 
                 <button className="text-green-600 text-sm hover:underline">
-
                   Forgot password?
-
                 </button>
 
               </div>
 
               <input
+                name="password"
                 type="password"
+                value={form.password}
+                onChange={handleChange}
                 placeholder="Enter your password"
                 className="w-full mt-2 p-4 border border-gray-300 rounded-2xl outline-none focus:border-green-600"
               />
-
             </div>
 
             {/* LOGIN BUTTON */}
-            <button className="w-full mt-6 bg-green-600 text-white py-4 rounded-2xl text-lg font-medium hover:bg-green-700 transition">
-
+            <button
+              onClick={handleLogin}
+              className="w-full mt-6 bg-green-600 text-white py-4 rounded-2xl text-lg font-medium hover:bg-green-700 transition"
+            >
               Login
-
             </button>
 
             {/* DIVIDER */}
@@ -112,9 +129,7 @@ const Login = () => {
 
               <div className="flex-1 h-[1px] bg-gray-200"></div>
 
-              <p className="text-gray-400">
-                or
-              </p>
+              <p className="text-gray-400">or</p>
 
               <div className="flex-1 h-[1px] bg-gray-200"></div>
 
@@ -138,19 +153,14 @@ const Login = () => {
                 onClick={() => navigate("/signup")}
                 className="text-green-600 font-medium hover:underline"
               >
-
                 Sign up
-
               </button>
 
             </p>
 
           </div>
-
         </div>
-
       </div>
-
     </div>
   );
 };
