@@ -68,6 +68,42 @@ const UploadModal = ({ closeModal }) => {
           Upload a clear image of your plant for AI analysis.
 
         </p>
+        <div
+  className="border-2 border-dashed border-gray-300 rounded-[30px] p-16 text-center hover:border-green-500 transition cursor-pointer"
+  onClick={() => document.getElementById("plantUpload").click()}
+  onDragOver={(e) => e.preventDefault()}
+  onDrop={(e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      handleImageUpload(file);
+    }
+  }}
+>
+  <div className="text-6xl mb-4">🌿</div>
+
+  <h2 className="text-4xl font-bold text-[#0F172A] mb-4">
+    Drag & Drop Plant Image
+  </h2>
+
+  <p className="text-gray-500 text-xl">
+    Browse image from device or open camera
+  </p>
+
+  <input
+    id="plantUpload"
+    type="file"
+    accept="image/*"
+    capture="environment"
+    className="hidden"
+    onChange={(e) => {
+      const file = e.target.files[0];
+      if (file) {
+        handleImageUpload(file);
+      }
+    }}
+  />
+</div>
 
         {/* RESULT SCREEN */}
         {result ? (
