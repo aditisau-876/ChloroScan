@@ -119,6 +119,7 @@ const Login = () => {
             {/* LOGIN BUTTON */}
             <button
               onClick={handleLogin}
+              onClick={() => navigate("/dashboard")}
               className="w-full mt-6 bg-green-600 text-white py-4 rounded-2xl text-lg font-medium hover:bg-green-700 transition"
             >
               Login
