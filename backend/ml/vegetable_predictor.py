@@ -1,10 +1,12 @@
 import tensorflow as tf
 import numpy as np
-from keras.utils import load_img, img_to_array
-import os
+from PIL import Image
+import pillow_avif
+from pillow_heif import register_heif_opener
 
+register_heif_opener()
 model = tf.keras.models.load_model(
-    "models/vegetable_leaf_model.keras"
+    "ml/models/vegetable_leaf_model.keras"
 )
 
 class_names = [
@@ -45,30 +47,77 @@ class_names = [
     'Zingiber officinale(Ginger)'
 ]
 
-supported_formats = ('.jpg', '.jpeg', '.png', 'avif', 'webp', '.bmp', '.gif', '.tiff')
-image_file = None
 
-for file in os.listdir():
-    if file.lower().endswith(supported_formats):
-        image_file = file
-        break
+def predict_vegetable(image_path):
 
-if image_file is None:
-    print("No image found.")
-    exit()
+    try:
+        img = Image.open(image_path)
+        img = img.convert("RGB")
+        img = img.resize((224, 224))
+        img_array = np.array(img)
+        img_array = img_array / 255.0
+        img_array = np.expand_dims(img_array, axis=0)
+        prediction = model.predict(img_array, verbose=0)
+        predicted_index = np.argmax(prediction)
+        confidence = float(
+            np.max(prediction) * 100
+        )
+        full_name = class_names[predicted_index]
+        if "(" in full_name and ")" in full_name:
+            scientific_name = (
+                full_name.split("(")[0].strip()
+            )
+            plant_name = (
+                full_name.split("(")[1]
+                .replace(")", "")
+                .strip()
+            )
+        else:
+            scientific_name = full_name
+            plant_name = full_name
+        top_3_indices = np.argsort(
+            prediction[0]
+        )[-3:][::-1]
 
-print(f"Using image: {image_file}")
+        top_predictions = []
+        for idx in top_3_indices:
+            candidate = class_names[idx]
+            if "(" in candidate and ")" in candidate:
+                sci_name = (
+                    candidate.split("(")[0].strip()
+                )
+                common_name = (
+                    candidate.split("(")[1]
+                    .replace(")", "")
+                    .strip()
+                )
 
-img = load_img(image_file,target_size=(224, 224))
-img_array = img_to_array(img)
-img_array = img_array / 255.0
-img_array = np.expand_dims(img_array, axis=0)
-prediction = model.predict(img_array)
-predicted_index = np.argmax(prediction)
-confidence = np.max(prediction)
-predicted_class = class_names[predicted_index]
+            else:
+                sci_name = candidate
+                common_name = candidate
+            top_predictions.append({
+                "scientific_name": sci_name,
+                "plant_name": common_name,
+                "confidence": round(
+                    float(prediction[0][idx] * 100),
+                    2
+                )
+            })
 
-print("\n========== RESULT ==========")
-print(f"Predicted Fruit: {predicted_class}")
-print(f"Confidence: {confidence:.2f}")
-print("============================")
+        return {
+            "success": True,
+            "scientific_name": scientific_name,
+            "plant_name": plant_name,
+            "confidence": round(confidence, 2),
+            "top_predictions": top_predictions
+        }
+
+    except Exception as e:
+        return {
+            "success": False,
+            "scientific_name": "Unknown",
+            "plant_name": "Unknown",
+            "confidence": 0,
+            "top_predictions": [],
+            "error": str(e)
+        }

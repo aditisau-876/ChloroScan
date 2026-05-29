@@ -53,9 +53,15 @@ def signup(
     )
 
     return {
-        "message": "Signup successful",
-        "token": token
+    "message": "Signup successful",
+    "token": token,
+
+    "user": {
+        "id": new_user.id,
+        "name": new_user.name,
+        "email": new_user.email
     }
+}
 
 
 @router.post("/login")
@@ -90,6 +96,12 @@ def login(
     )
 
     return {
-        "message": "Login successful",
-        "token": token
+    "message": "Login successful",
+    "token": token,
+
+    "user": {
+        "id": db_user.id,
+        "name": db_user.name,
+        "email": db_user.email
     }
+}
