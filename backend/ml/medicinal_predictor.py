@@ -1,14 +1,12 @@
 import tensorflow as tf
 import numpy as np
-from tensorflow.keras.preprocessing import image
+from keras.utils import load_img, img_to_array
+import os
 
-# Load medicinal model
 model = tf.keras.models.load_model(
     "models/medicinal_plant_model.keras"
 )
 
-# IMPORTANT:
-# Replace with YOUR medicinal classes
 class_names = [
     'Aloe barbadensis(Aloevera)',
     'Alpinia Galanga (Rasna)',
@@ -65,32 +63,30 @@ class_names = [
     'Wrightia tinctoria(Badipala)'
 ]
 
-# Load image
-img = image.load_img(
-    "test.jpg",
-    target_size=(224,224)
-)
+supported_formats = ('.jpg', '.jpeg', '.png', 'avif', 'webp', '.bmp', '.gif', '.tiff')
+image_file = None
 
-# Convert image to array
-img_array = image.img_to_array(img)
+for file in os.listdir():
+    if file.lower().endswith(supported_formats):
+        image_file = file
+        break
 
-# Normalize
+if image_file is None:
+    print("No image found.")
+    exit()
+
+print(f"Using image: {image_file}")
+
+img = load_img(image_file,target_size=(224, 224))
+img_array = img_to_array(img)
 img_array = img_array / 255.0
-
-# Add batch dimension
 img_array = np.expand_dims(img_array, axis=0)
-
-# Predict
 prediction = model.predict(img_array)
-
-# Get prediction
 predicted_index = np.argmax(prediction)
-
 confidence = np.max(prediction)
-
 predicted_class = class_names[predicted_index]
 
-# Print result
-print("Medicinal Plant:", predicted_class)
-
-print("Confidence:", confidence)
+print("\n========== RESULT ==========")
+print(f"Predicted Fruit: {predicted_class}")
+print(f"Confidence: {confidence:.2f}")
+print("============================")
