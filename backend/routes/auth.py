@@ -1,6 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-
+from google.oauth2 import id_token
+from google.auth.transport import requests
+from schemas.google_schema import GoogleAuthRequest
+import os
 from database import get_db
 from models.user_model import User
 from schemas.user_schema import SignupSchema, LoginSchema
@@ -9,12 +12,11 @@ from utils.auth import (
     verify_password,
     create_access_token
 )
-
+google_client_id = os.getenv("GOOGLE_CLIENT_ID")
 router = APIRouter(
     prefix="/auth",
     tags=["Authentication"]
 )
-
 
 @router.post("/signup")
 def signup(
@@ -63,7 +65,6 @@ def signup(
     }
 }
 
-
 @router.post("/login")
 def login(
     user: LoginSchema,
@@ -105,3 +106,54 @@ def login(
         "email": db_user.email
     }
 }
+
+@router.post("/google")
+def google_login(
+    data: GoogleAuthRequest,
+    db: Session = Depends(get_db)
+):
+    try:
+
+        idinfo = id_token.verify_oauth2_token(
+            data.token,
+            requests.Request(),
+            os.getenv("GOOGLE_CLIENT_ID")
+        )
+
+        email = idinfo["email"]
+        name = idinfo["name"]
+
+        user = db.query(User).filter(
+            User.email == email
+        ).first()
+
+        if not user:
+
+            user = User(
+                name=name,
+                email=email,
+                password=""
+            )
+
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+
+        access_token = create_access_token(
+            {"user_id": user.id}
+        )
+
+        return {
+            "token": access_token,
+            "user": {
+                "id": user.id,
+                "name": user.name,
+                "email": user.email
+            }
+        }
+
+    except Exception:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid Google token"
+        )

@@ -2,10 +2,12 @@ import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { signup } from "../api/auth";
-
+import { GoogleLogin } from "@react-oauth/google";
+import { googleLogin } from "../api/auth";
 const Signup = () => {
   const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -13,23 +15,27 @@ const Signup = () => {
   });
 
   const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    });
-  };
+  setForm({
+    ...form,
+    [e.target.name]: e.target.value
+  });
+
+  setError("");
+};
 
   const handleSignup = async () => {
     try {
+      setLoading(true);
       const res = await signup(form);
-      console.log(res.data);
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user",JSON.stringify(res.data.user)
-);
-
-navigate("/dashboard");
+      setError("");
+      navigate("/login");
     } catch (err) {
-      console.log(err.response?.data);
+      setError(
+        err.response?.data?.detail || "Signup failed"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -65,6 +71,7 @@ navigate("/dashboard");
                 Email
               </label>
               <input
+                type="email"
                 name="email"
                 value={form.email}
                 onChange={handleChange}
@@ -79,18 +86,20 @@ navigate("/dashboard");
               <input
                 name="password"
                 type="password"
+                minLength={6}
                 value={form.password}
                 onChange={handleChange}
                 placeholder="Create a password"
                 className="w-full h-[40px] mt-3 px-5 rounded-2xl border border-gray-300 outline-none focus:border-green-600 text-[16px]"/>
+            {error && (<div className="bg-red-50 border border-red-200 text-red-600 rounded-xl p-3 text-sm">{error}</div>)}
             </div>
 
             <button
               onClick={handleSignup}
-              className="w-full h-[40px] bg-green-600 hover:bg-green-700 transition rounded-2xl text-white text-lg font-medium"
-            >
-              Sign Up
-            </button>
+              disabled={loading}
+              className="w-full h-[40px] bg-green-600 hover:bg-green-700 transition rounded-2xl text-white text-lg font-medium disabled:opacity-50">
+              {loading ? "Creating Account..." : "Sign Up"}
+              </button>
 
             <div className="flex items-center gap-4 mt-1">
 
@@ -100,11 +109,23 @@ navigate("/dashboard");
 
             </div>
 
-            <button className="w-full h-[40px] border border-gray-300 rounded-2xl flex items-center justify-center gap-3 hover:bg-gray-50 transition text-lg">
-              <FcGoogle className="text-2xl" />
-              Continue with Google
-
-            </button>
+            <div className="flex justify-center">
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                try {
+                  const res = await googleLogin(credentialResponse.credential);
+                    localStorage.setItem("token",res.data.token);
+                    localStorage.setItem("user",JSON.stringify(res.data.user));
+                  navigate("/dashboard");
+                  } catch (error) {
+                    console.error(error);
+                    setError("Google signup failed");
+                  }
+                }}
+                  onError={() => {setError("Google signup failed");
+                  }}
+                  />
+                </div>
 
             <p className="text-center text-gray-500 pt-1 text-sm">
               Already have an account?{" "}

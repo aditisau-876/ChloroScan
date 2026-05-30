@@ -1,37 +1,48 @@
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { login } from "../api/auth";;
-
+import { login } from "../api/auth";
+import { GoogleLogin } from "@react-oauth/google";
+import { googleLogin } from "../api/auth";
 const Login = () => {
   const navigate = useNavigate();
-
-  // ✅ STATE (MISSING BEFORE)
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({
     email: "",
     password: ""
   });
 
-  // ✅ INPUT HANDLER
   const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    });
-  };
+  setForm({
+    ...form,
+    [e.target.name]: e.target.value
+  });
+
+  setError("");
+};
 
   const handleLogin = async () => {
-    try {
-      const res = await login(form);
-      console.log(res.data);
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user",JSON.stringify(res.data.user));
+  try {
+    setLoading(true);
 
-navigate("/dashboard");
-    } catch (err) {
-      console.log(err.response?.data);
-    }
-  };
+    const res = await login(form);
+
+    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("user", JSON.stringify(res.data.user));
+
+    setError("");
+
+    navigate("/dashboard");
+
+  } catch (err) {
+    setError(
+      err.response?.data?.detail || "Login failed"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-[#F9FBF8] flex items-center justify-center px-6 py-6">
@@ -66,6 +77,7 @@ navigate("/dashboard");
               </label>
 
               <input
+                type="email"
                 name="email"
                 value={form.email}
                 onChange={handleChange}
@@ -95,23 +107,37 @@ navigate("/dashboard");
                 className="w-full mt-2 p-4 border border-gray-300 rounded-2xl outline-none focus:border-green-600"
               />
             </div>
+            {error && (<div className="bg-red-50 border border-red-200 text-red-600 rounded-xl p-3 mt-4 text-sm">{error}</div>)}
 
-            <button
+
+            <button     
               onClick={handleLogin}
-              className="w-full mt-6 bg-green-600 text-white py-4 rounded-2xl text-lg font-medium hover:bg-green-700 transition">
-              Login
+              disabled={loading}
+              className="w-full mt-6 bg-green-600 text-white py-4 rounded-2xl text-lg font-medium hover:bg-green-700 transition disabled:opacity-50"
+            >
+              {loading ? "Logging in..." : "Login"}
             </button>
-
             <div className="flex items-center gap-4 my-5">
               <div className="flex-1 h-[1px] bg-gray-200"></div>
               <p className="text-gray-400">or</p>
               <div className="flex-1 h-[1px] bg-gray-200"></div>
             </div>
 
-            <button className="w-full border border-gray-300 py-4 rounded-2xl flex items-center justify-center gap-3 hover:bg-gray-50 transition text-lg">
-              <FcGoogle className="text-2xl" />
-              Continue with Google
-            </button>
+            <div className="flex justify-center">
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                try {
+                  const res = await googleLogin(credentialResponse.credential);
+                  localStorage.setItem("token",res.data.token);
+                  localStorage.setItem("user",JSON.stringify(res.data.user));
+                  navigate("/dashboard");
+                  } catch (error) {
+                    console.error(error);
+                  }
+                }}
+                onError={() => {console.log("Google Login Failed");}}
+              />
+            </div>
 
             <p className="text-center text-gray-500 mt-6">
               Don’t have an account?{" "}
