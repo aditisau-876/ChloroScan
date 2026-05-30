@@ -1,24 +1,13 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Droplet, 
-  Sun, 
-  Layers, 
-  Thermometer, 
-  Cloud, 
-  Sprout, 
-  Heart,
-  ScanLine,
-  ChevronRight,
-  ShieldCheck,
-  Activity // Added an icon for medical/health tracking aesthetics
-} from 'lucide-react';
-
+import { Droplet, Sun, Layers, Thermometer, Cloud, Sprout, Heart,ScanLine,ChevronRight,ShieldCheck,Activity} from 'lucide-react';
+import { useLocation } from "react-router-dom";
 export default function CareGuide() {
+  const location = useLocation();
+  const scientificName =location.state?.scientificName;
   const [activeTab, setActiveTab] = useState('Care Guide');
   const [isFavorite, setIsFavorite] = useState(false);
 
-  // Added 'Medicinal Use' to the tab menu array
   const tabs = ['Care Guide', 'Growth Info', 'Problems', 'Similar Plants', 'Medicinal Use'];
 
   const careDetails = [
