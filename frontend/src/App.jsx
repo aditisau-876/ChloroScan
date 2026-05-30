@@ -6,6 +6,7 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import MyPlants from "./pages/MyPlants";
 import CareGuide from "./pages/CareGuide";
+import Reminders from "./pages/Reminders";
 
 function App() {
   return (
@@ -22,6 +23,8 @@ function App() {
       <Route path="/myplants" element={<MyPlants />} />
 
       <Route path="/careguide" element={<CareGuide />}/>
+
+      <Route path="/reminders"element={<Reminders />}/>
 
     </Routes>
   );

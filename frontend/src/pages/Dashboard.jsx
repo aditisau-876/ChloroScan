@@ -49,7 +49,9 @@ export default function Dashboard() {
               <FaLeaf size={15} />My Plants
             </button>
 
-            <button className="flex items-center gap-4 text-slate-300 hover:text-white hover:bg-white/10 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 hover:translate-x-1 text-left w-full cursor-pointer">
+            <button
+            onClick={() => navigate("/reminders")} 
+            className="flex items-center gap-4 text-slate-300 hover:text-white hover:bg-white/10 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 hover:translate-x-1 text-left w-full cursor-pointer">
               <FaBell size={15} />Reminders</button>
           </nav>
         </div>
