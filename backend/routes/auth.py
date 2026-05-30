@@ -117,22 +117,32 @@ def google_login(
         idinfo = id_token.verify_oauth2_token(
             data.token,
             requests.Request(),
-            os.getenv("GOOGLE_CLIENT_ID")
+            google_client_id
         )
 
         email = idinfo["email"]
         name = idinfo["name"]
+        google_id = idinfo["sub"]
 
         user = db.query(User).filter(
             User.email == email
         ).first()
 
+        if user and not user.google_id:
+
+            user.google_id = google_id
+
+            db.commit()
+            db.refresh(user)
+
+        # Brand new Google user
         if not user:
 
             user = User(
                 name=name,
                 email=email,
-                password=""
+                password=None,
+                google_id=google_id
             )
 
             db.add(user)
@@ -152,7 +162,10 @@ def google_login(
             }
         }
 
-    except Exception:
+    except Exception as e:
+
+        print("Google Login Error:", e)
+
         raise HTTPException(
             status_code=400,
             detail="Invalid Google token"

@@ -17,12 +17,12 @@ export default function MyPlants() {
     { id: 6, name: 'Rubber Plant', status: 'Healthy', statusType: 'success', lastCared: '1 day ago', img: 'https://images.unsplash.com/photo-1525498128493-380d1990a112?auto=format&fit=crop&w=400&q=80' }
   ];
 
-  // Framer Motion Animation Variants
+  
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: { staggerChildren: 0.08 } // Staggers the entry of each plant card
+      transition: { staggerChildren: 0.08 } 
     }
   };
 
@@ -33,16 +33,12 @@ export default function MyPlants() {
 
   return (
     <div className="flex min-h-screen bg-[#F8F9FA] font-sans antialiased w-full">
-      
-      {/* SIDEBAR */}
       <aside className="w-64 bg-[#0A3622] text-white flex flex-col justify-between p-6 shrink-0 fixed h-full left-0 top-0 z-10">
         <div>
-          {/* Logo / Brand */}
           <div className="flex items-center gap-3 mb-10">
             <motion.div 
               whileHover={{ rotate: 15 }}
-              className="bg-[#198754] p-2 rounded-xl cursor-pointer"
-            >
+              className="bg-[#198754] p-2 rounded-xl cursor-pointer">
               <Leaf className="w-6 h-6 text-white" />
             </motion.div>
             <div>
@@ -50,8 +46,6 @@ export default function MyPlants() {
               <p className="text-xs text-emerald-400/80">Plant Care Assistant</p>
             </div>
           </div>
-
-          {/* Navigation Links */}
           <nav className="space-y-2">
             <motion.a whileHover={{ x: 4 }} href="#" className="flex items-center gap-3 px-4 py-3 text-emerald-100/70 hover:text-white rounded-xl transition">
               <Home className="w-5 h-5" />
@@ -67,35 +61,25 @@ export default function MyPlants() {
             </motion.a>
           </nav>
         </div>
-
-        {/* Logout Button */}
         <motion.a whileHover={{ x: 4 }} href="#" className="flex items-center gap-3 px-4 py-3 text-emerald-100/70 hover:text-white rounded-xl transition">
           <LogOut className="w-5 h-5" />
           <span className="font-medium">Logout</span>
         </motion.a>
       </aside>
-
-      {/* MAIN CONTENT AREA */}
       <main className="flex-1 pl-72 pr-8 py-8 overflow-y-auto max-w-[1400px] mx-auto w-full">
-        
-        {/* TOP HEADER */}
         <motion.header 
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex justify-between items-start mb-8"
-        >
+          className="flex justify-between items-start mb-8">
           <div>
             <h2 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
               My Plants <motion.span animate={{ rotate: [0, 10, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }} className="text-2xl origin-bottom-right inline-block">🌿</motion.span>
             </h2>
             <p className="text-gray-500 mt-1">Manage your plants and keep them healthy.</p>
           </div>
-          
-          {/* Weather Widget */}
           <motion.div 
             whileHover={{ scale: 1.03 }}
-            className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex items-center gap-4 cursor-pointer"
-          >
+            className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex items-center gap-4 cursor-pointer">
             <div className="text-amber-500 bg-amber-50 p-2 rounded-xl">
               <Sun className="w-6 h-6 fill-amber-500/20" />
             </div>
@@ -105,14 +89,11 @@ export default function MyPlants() {
             </div>
           </motion.div>
         </motion.header>
-
-        {/* SEARCH BAR CONTAINER */}
         <motion.section 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 mb-8"
-        >
+          className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-4">
             <div className="bg-emerald-50 p-3 rounded-full text-emerald-700">
               <Search className="w-5 h-5" />
@@ -127,18 +108,14 @@ export default function MyPlants() {
             <input 
               type="text" 
               placeholder="Search for a plant..." 
-              className="w-full pl-11 pr-14 py-2.5 bg-[#F8F9FA] border border-gray-200 rounded-xl focus:outline-none focus:border-emerald-500 text-sm transition-all focus:shadow-inner" 
-            />
+              className="w-full pl-11 pr-14 py-2.5 bg-[#F8F9FA] border border-gray-200 rounded-xl focus:outline-none focus:border-emerald-500 text-sm transition-all focus:shadow-inner" />
             <motion.button 
               whileTap={{ scale: 0.95 }}
-              className="absolute right-1.5 bg-[#198754] text-white p-1.5 rounded-lg hover:bg-emerald-700 transition"
-            >
+              className="absolute right-1.5 bg-[#198754] text-white p-1.5 rounded-lg hover:bg-emerald-700 transition">
               <Search className="w-4 h-4" />
             </motion.button>
           </div>
         </motion.section>
-
-        {/* CARD CONTROLS */}
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-lg font-bold text-gray-800">
             Your Plants <span className="text-xs font-normal text-gray-400 ml-2">You have {plants.length} plants</span>
@@ -152,22 +129,17 @@ export default function MyPlants() {
             </select>
           </div>
         </div>
-
-        {/* PLANTS GRID (WITH ANIMATION STAGGER) */}
         <motion.section 
           variants={containerVariants}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
-        >
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {plants.map((plant) => (
             <motion.div 
               key={plant.id} 
               variants={cardVariants}
               whileHover={{ y: -6, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05)" }}
-              className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex gap-4 transition-shadow duration-300 overflow-hidden relative group"
-            >
-              {/* Plant Image Container */}
+              className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex gap-4 transition-shadow duration-300 overflow-hidden relative group">
               <div className="w-1/3 aspect-[4/5] bg-gray-50 rounded-xl overflow-hidden shrink-0 relative">
                 <motion.img 
                   whileHover={{ scale: 1.08 }}
@@ -177,8 +149,6 @@ export default function MyPlants() {
                   className="w-full h-full object-cover" 
                 />
               </div>
-              
-              {/* Plant Details */}
               <div className="flex flex-col justify-between flex-1 py-1">
                 <div>
                   <h4 className="font-bold text-gray-800 text-lg group-hover:text-emerald-800 transition-colors">{plant.name}</h4>
@@ -196,9 +166,8 @@ export default function MyPlants() {
                   <p className="text-xs font-semibold text-gray-700 mt-0.5">{plant.lastCared}</p>
                   <motion.button 
                     whileTap={{ scale: 0.98 }}
-                    onClick={() => navigate(`/careguide/${plant.id}`)}
-                    className="w-full mt-3 border border-gray-200 hover:border-emerald-600 hover:bg-emerald-50/30 rounded-xl py-2 px-3 text-xs font-bold text-emerald-700 flex items-center justify-center gap-1 group/btn transition-all"
-                  >
+                    onClick={() => navigate("/careguide", {state: {scientificName: plant.scientific_name}})}
+                    className="w-full mt-3 border border-gray-200 hover:border-emerald-600 hover:bg-emerald-50/30 rounded-xl py-2 px-3 text-xs font-bold text-emerald-700 flex items-center justify-center gap-1 group/btn transition-all">
                     <BookOpen className="w-3.5 h-3.5" /> Care Guide
                     <ChevronRight className="w-3.5 h-3.5 ml-auto text-gray-400 group-hover/btn:translate-x-1 transition-transform" />
                   </motion.button>
@@ -207,23 +176,17 @@ export default function MyPlants() {
             </motion.div>
           ))}
         </motion.section>
-
-        {/* FOOTER TIP */}
         <motion.footer 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
           whileHover={{ scale: 1.005 }}
-          className="bg-[#EBF5EE] border border-[#D1E7DD] rounded-2xl p-4 flex items-center gap-3 cursor-default"
-        >
+          className="bg-[#EBF5EE] border border-[#D1E7DD] rounded-2xl p-4 flex items-center gap-3 cursor-default">
           <div className="bg-[#198754] text-white p-2 rounded-xl shrink-0">
             <Info className="w-4 h-4" />
           </div>
-          <p className="text-sm text-[#0F5132] font-medium">
-            <strong className="font-bold">Plant Care Tip:</strong> Wipe the leaves of your plants regularly to keep them dust free and improve photosynthesis.
-          </p>
+          <p className="text-sm text-[#0F5132] font-medium"><strong className="font-bold">Plant Care Tip:</strong> Wipe the leaves of your plants regularly to keep them dust free and improve photosynthesis.</p>
         </motion.footer>
-
       </main>
     </div>
   );

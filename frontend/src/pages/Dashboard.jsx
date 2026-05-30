@@ -27,9 +27,13 @@ const plants = [
 ];
 
 export default function Dashboard() {
-
   const navigate = useNavigate();
-  
+  const handleLogout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+
+  navigate("/login");
+};
   return (
     <div className="h-screen w-screen overflow-hidden bg-[#F8FAFC] flex font-sans antialiased text-slate-800">
       <aside className="w-64 bg-[#0F3A20] text-white p-5 flex flex-col justify-between shadow-xl select-none flex-shrink-0">
@@ -57,7 +61,7 @@ export default function Dashboard() {
         </div>
 
         <div className="pt-3 border-t border-white/10">
-          <button className="flex items-center gap-4 text-slate-300 hover:text-red-200 hover:bg-red-500/20 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 text-left w-full cursor-pointer">
+          <button onClick={handleLogout} className="flex items-center gap-4 text-slate-300 hover:text-red-200 hover:bg-red-500/20 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 text-left w-full cursor-pointer">
             <FaSignOutAlt size={15} />
             Logout
           </button>
@@ -134,14 +138,8 @@ export default function Dashboard() {
         <div>
           <div className="flex items-center gap-3 mb-4 border-b border-slate-100 pb-2">
             <h2 className="text-base font-bold text-slate-800 tracking-tight">Your Plants</h2>
-            <span className="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
-              {plants.length} Total
-            </span>
-            
-            <button className="ml-auto flex items-center gap-1.5 text-emerald-700 hover:text-emerald-900 text-xs font-bold bg-emerald-50/50 hover:bg-emerald-50 px-2.5 py-1.5 rounded-lg transition duration-300 cursor-pointer group">
-              View All Plants
-              <FaArrowRight size={9} className="transform group-hover:translate-x-0.5 transition-transform" />
-            </button>
+            <span className="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full">{plants.length} Total</span>
+            <button className="ml-auto flex items-center gap-1.5 text-emerald-700 hover:text-emerald-900 text-xs font-bold bg-emerald-50/50 hover:bg-emerald-50 px-2.5 py-1.5 rounded-lg transition duration-300 cursor-pointer group">View All Plants<FaArrowRight size={9} className="transform group-hover:translate-x-0.5 transition-transform" /></button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 items-stretch">

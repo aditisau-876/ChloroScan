@@ -7,7 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import MyPlants from "./pages/MyPlants";
 import CareGuide from "./pages/CareGuide";
 import Reminders from "./pages/Reminders";
-
+import ProtectedRoute from "./components/ProtectedRoute";
 function App() {
   return (
     <Routes>
@@ -18,13 +18,13 @@ function App() {
 
       <Route path="/signup" element={<Signup />} />
 
-      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
-      <Route path="/myplants" element={<MyPlants />} />
+      <Route path="/myplants" element={<ProtectedRoute><MyPlants /></ProtectedRoute>} />
 
-      <Route path="/careguide" element={<CareGuide />}/>
+      <Route path="/careguide" element={<ProtectedRoute><CareGuide /></ProtectedRoute>}/>
 
-      <Route path="/reminders"element={<Reminders />}/>
+      <Route path="/reminders"element={<ProtectedRoute><Reminders /></ProtectedRoute>}/>
 
     </Routes>
   );
