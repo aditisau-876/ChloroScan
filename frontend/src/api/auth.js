@@ -11,3 +11,8 @@ export const signup = (data) => {
 export const login = (data) => {
   return API.post("/auth/login", data);
 };
+export const googleLogin = (token) => {
+  return API.post("/auth/google", {
+    token
+  });
+};
