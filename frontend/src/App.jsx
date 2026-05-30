@@ -4,6 +4,8 @@ import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
+import MyPlants from "./pages/MyPlants";
+import CareGuide from "./pages/CareGuide";
 
 function App() {
   return (
@@ -16,6 +18,10 @@ function App() {
       <Route path="/signup" element={<Signup />} />
 
       <Route path="/dashboard" element={<Dashboard />} />
+
+      <Route path="/myplants" element={<MyPlants />} />
+
+      <Route path="/careguide" element={<CareGuide />}/>
 
     </Routes>
   );

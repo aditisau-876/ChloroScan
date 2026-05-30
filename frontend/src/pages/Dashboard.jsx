@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { FaHome, FaLeaf, FaBell, FaSignOutAlt, FaPlus, FaTint, FaInfoCircle, FaSun,FaLightbulb,FaArrowRight} from "react-icons/fa";
 import WeatherWidget from "../components/WeatherWidget";
 const user = JSON.parse(localStorage.getItem("user"));
@@ -26,6 +27,9 @@ const plants = [
 ];
 
 export default function Dashboard() {
+
+  const navigate = useNavigate();
+  
   return (
     <div className="h-screen w-screen overflow-hidden bg-[#F8FAFC] flex font-sans antialiased text-slate-800">
       <aside className="w-64 bg-[#0F3A20] text-white p-5 flex flex-col justify-between shadow-xl select-none flex-shrink-0">
@@ -39,8 +43,11 @@ export default function Dashboard() {
             <button className="flex items-center gap-4 bg-[#1E4D32] px-4 py-3 rounded-xl text-sm font-semibold shadow-inner transition duration-300 text-left w-full cursor-pointer">
               <FaHome size={15} />Home</button>
 
-            <button className="flex items-center gap-4 text-slate-300 hover:text-white hover:bg-white/10 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 hover:translate-x-1 text-left w-full cursor-pointer">
-              <FaLeaf size={15} />My Plants</button>
+            <button 
+            onClick={() => navigate("/myplants")}
+            className="flex items-center gap-4 text-slate-300 hover:text-white hover:bg-white/10 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 hover:translate-x-1 text-left w-full cursor-pointer">
+              <FaLeaf size={15} />My Plants
+            </button>
 
             <button className="flex items-center gap-4 text-slate-300 hover:text-white hover:bg-white/10 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 hover:translate-x-1 text-left w-full cursor-pointer">
               <FaBell size={15} />Reminders</button>
