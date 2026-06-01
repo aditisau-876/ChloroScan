@@ -10,7 +10,6 @@ env_path = BASE_DIR / ".env"
 load_dotenv(dotenv_path=env_path, override=True)
 
 DATABASE_URL = os.getenv("DATABASE_URL")
-print("DATABASE URL:", DATABASE_URL)
 
 engine = create_engine(DATABASE_URL)
 
