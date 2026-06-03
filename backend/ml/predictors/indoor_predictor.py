@@ -3,13 +3,12 @@ import numpy as np
 from backend.ml.core.image_utils import preprocess_image
 
 model = tf.keras.models.load_model(
-    "ml/models/medicinal/medicinal_plant_model.keras"
+    "ml/models/indoor/indoor_plant_model.keras"
 )
-with open("ml/models/fruit/fruit_classes.txt", "r") as f:
+with open("ml/models/indoor/indoor_plant_classes.txt", "r") as f:
     class_names = [line.strip() for line in f.readlines()]
 
 def predict_indoor(image_path):
-
     try:
         img_array = preprocess_image(image_path)
         prediction = model.predict(img_array, verbose=0)
