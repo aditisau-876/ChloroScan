@@ -1,53 +1,84 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Droplet, Sun, Layers, Thermometer, Cloud, Sprout, Heart,ScanLine,ChevronRight,ShieldCheck,Activity} from 'lucide-react';
 import { useLocation } from "react-router-dom";
+import logo from "../assets/logo.png";
 export default function CareGuide() {
   const location = useLocation();
-  const scientificName =location.state?.scientificName;
+  const modelName = location.state?.modelName;
+  console.log("Location State:", location.state);
+console.log("Model Name:", modelName);
   const [activeTab, setActiveTab] = useState('Care Guide');
   const [isFavorite, setIsFavorite] = useState(false);
-
+  const [plant, setPlant] = useState(null);
+  const [loading, setLoading] = useState(true);
   const tabs = ['Care Guide', 'Growth Info', 'Problems', 'Similar Plants', 'Medicinal Use'];
+useEffect(() => {
+  console.log("Fetching plant:", modelName);
 
-  const careDetails = [
-    {
-      id: 'watering',
-      icon: <Droplet className="w-5 h-5 text-[#1b4d3e]" />,
-      title: 'Watering',
-      description: 'Water when the top 1-2 inches of soil is dry.'
-    },
-    {
-      id: 'sunlight',
-      icon: <Sun className="w-5 h-5 text-[#1b4d3e]" />,
-      title: 'Sunlight',
-      description: 'Bright, indirect light. Avoid direct sunlight.'
-    },
-    {
-      id: 'soil',
-      icon: <Layers className="w-5 h-5 text-[#1b4d3e]" />,
-      title: 'Soil Type',
-      description: 'Well-draining, rich, and airy soil.'
-    },
-    {
-      id: 'temperature',
-      icon: <Thermometer className="w-5 h-5 text-[#1b4d3e]" />,
-      title: 'Temperature',
-      description: '18°C — 30°C is ideal for growth.'
-    },
-    {
-      id: 'humidity',
-      icon: <Cloud className="w-5 h-5 text-[#1b4d3e]" />,
-      title: 'Humidity',
-      description: 'Prefers high humidity (60%+).'
-    },
-    {
-      id: 'fertilizer',
-      icon: <Sprout className="w-5 h-5 text-[#1b4d3e]" />,
-      title: 'Fertilizer',
-      description: 'Feed once a month during growing season.'
-    }
-  ];
+  if (!modelName) {
+    console.log("No model name found");
+    setLoading(false);   // <-- here
+    return;
+  }
+
+  fetch(`http://localhost:8000/plant/${encodeURIComponent(modelName)}`)
+    .then(res => {
+      console.log("Response status:", res.status);
+      return res.json();
+    })
+    .then(data => {
+      console.log("Plant data:", data);
+      setPlant(data);
+      setLoading(false);   // <-- success
+    })
+    .catch(err => {
+      console.error("Fetch error:", err);
+      setLoading(false);   // <-- error
+    });
+
+}, [modelName]);
+
+  const careDetails = plant
+  ? [
+      {
+        id: "watering",
+        icon: <Droplet className="w-5 h-5 text-[#1b4d3e]" />,
+        title: "Watering",
+        description: plant.watering
+      },
+      {
+        id: "sunlight",
+        icon: <Sun className="w-5 h-5 text-[#1b4d3e]" />,
+        title: "Sunlight",
+        description: plant.sunlight
+      },
+      {
+        id: "soil",
+        icon: <Layers className="w-5 h-5 text-[#1b4d3e]" />,
+        title: "Soil",
+        description: plant.soil
+      },
+      {
+        id: "temperature",
+        icon: <Thermometer className="w-5 h-5 text-[#1b4d3e]" />,
+        title: "Temperature",
+        description: plant.temperature
+      },
+      {
+        id: "humidity",
+        icon: <Cloud className="w-5 h-5 text-[#1b4d3e]" />,
+        title: "Humidity",
+        description: plant.humidity
+      },
+      {
+        id: "fertiliser",
+        icon: <Sprout className="w-5 h-5 text-[#1b4d3e]" />,
+        title: "Fertiliser",
+        description: plant.fertiliser
+      }
+    ]
+  : [];
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -61,7 +92,21 @@ export default function CareGuide() {
     hidden: { opacity: 0, y: 10 },
     show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 120, damping: 15 } }
   };
+  if (loading) {
+  return (
+    <div className="h-screen flex items-center justify-center">
+      Loading...
+    </div>
+  );
+}
 
+if (!plant) {
+  return (
+    <div className="h-screen flex items-center justify-center">
+      Plant not found
+    </div>
+  );
+}
   return (
     <div 
       className="h-screen w-screen relative p-4 md:p-6 lg:p-8 flex justify-center items-center font-sans antialiased text-slate-800 overflow-hidden bg-cover bg-center bg-no-repeat"
@@ -81,21 +126,13 @@ export default function CareGuide() {
       >
         
         {/* Top Header Row */}
-        <div className="flex items-center justify-between mb-5 pb-3 border-b border-slate-200/50 flex-shrink-0">
-          <div className="flex items-center gap-2.5 group cursor-pointer">
-            <div className="bg-[#e8f5e9]/90 p-1.5 rounded-xl text-[#2d8a4e] transition-transform duration-300 group-hover:scale-105 shadow-xs">
-              <ScanLine className="w-5 h-5" />
-            </div>
-            <span className="text-xl font-bold text-[#1b4d3e] tracking-tight">
-              Chloro<span className="text-[#2d8a4e] font-medium">Scan</span>
-            </span>
-          </div>
-          
-          <div className="flex items-center gap-1.5 bg-emerald-50/80 border border-emerald-100 px-2.5 py-1 rounded-full shadow-2xs">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span className="text-[10px] font-bold text-emerald-800 tracking-wide uppercase">Scan Healthy</span>
-          </div>
-        </div>
+        <div className="flex items-center mb-6 flex-shrink-0">
+  <img
+    src={logo}
+    alt="ChloroScan Logo"
+    className="h-12 object-contain"
+  />
+</div>
 
         {/* Hero Section */}
         <div className="flex flex-col md:flex-row gap-6 items-center md:items-start mb-6 flex-shrink-0">
@@ -105,18 +142,14 @@ export default function CareGuide() {
             whileHover={{ scale: 1.01 }}
             className="w-full md:w-64 h-44 md:h-52 bg-slate-50 rounded-2xl overflow-hidden flex-shrink-0 shadow-md border border-white/60 relative group"
           >
-            <img 
-              src="https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&q=80&w=800" 
-              alt="Monstera Deliciosa" 
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-103"
-            />
+            <img src={plant.image_url} alt={plant.plant_name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-103"/>
           </motion.div>
 
           {/* Plant Identity Details */}
           <div className="flex-1 text-center md:text-left w-full pt-1">
-            <div className="text-[10px] font-bold text-[#2d8a4e] tracking-widest uppercase mb-0.5">Aroid Family</div>
-            <h1 className="text-2xl md:text-3xl font-extrabold text-[#1b4d3e] tracking-tight mb-0.5">Monstera Deliciosa</h1>
-            <p className="text-slate-500 italic text-base mb-4 font-medium">Monstera deliciosa</p>
+            <div className="text-[10px] font-bold text-[#2d8a4e] tracking-widest uppercase mb-0.5">{plant.family}</div>
+            <h1 className="text-2xl md:text-3xl font-extrabold text-[#1b4d3e] tracking-tight mb-0.5">{plant.plant_name}</h1>
+            <p className="text-slate-500 italic text-base mb-4 font-medium">{plant.scientific_name}</p>
             
             {/* Action Buttons */}
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
@@ -211,7 +244,7 @@ export default function CareGuide() {
                 className="h-full min-h-[180px] text-center text-slate-500 border-2 border-dashed border-slate-200/60 rounded-xl flex flex-col items-center justify-center gap-1.5 bg-white/40 backdrop-blur-xs"
               >
                 <Activity className="w-6 h-6 text-emerald-600 stroke-1 animate-pulse" />
-                <span className="text-xs font-semibold tracking-wide">Medicinal properties & biochemical analysis loading...</span>
+                <span className="text-xs font-semibold tracking-wide"><p className="max-w-3xl text-center text-slate-700">{plant.medicinal_uses}</p></span>
               </motion.div>
             )}
 

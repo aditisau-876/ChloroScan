@@ -123,6 +123,7 @@ const Signup = () => {
                   }
                 }}
                   onError={() => {setError("Google signup failed");
+                  text="signup_with";
                   }}
                   />
                 </div>
