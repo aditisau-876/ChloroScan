@@ -2,16 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from google.oauth2 import id_token
 from google.auth.transport import requests
-from schemas.google_schema import GoogleAuthRequest
+from backend.schemas.google_schema import GoogleAuthRequest
 import os
-from database import get_db
-from models.user_model import User
-from schemas.user_schema import SignupSchema, LoginSchema
-from utils.auth import (
-    hash_password,
-    verify_password,
-    create_access_token
-)
+from backend.database import get_db
+from backend.models.user_model import User
+from backend.schemas.user_schema import SignupSchema, LoginSchema
+from backend.utils.auth import (hash_password,verify_password,create_access_token)
 google_client_id = os.getenv("GOOGLE_CLIENT_ID")
 router = APIRouter(
     prefix="/auth",
