@@ -2,9 +2,9 @@ from dotenv import load_dotenv
 load_dotenv()
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes.auth import router as auth_router
-from routes.plant import router as plant_router
-from routes.weather import router as weather_router
+from backend.routes.auth import router as auth_router
+from backend.routes.plant import router as plant_router
+from backend.routes.weather import router as weather_router
 app = FastAPI()
 
 app.add_middleware(
