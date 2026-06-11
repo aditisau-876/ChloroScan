@@ -135,7 +135,9 @@ const Login = () => {
                     console.error(error);
                   }
                 }}
-                onError={() => {console.log("Google Login Failed");}}
+                onError={() => {console.log("Google Login Failed");
+                text="signin_with";
+                }}
               />
             </div>
 

@@ -82,19 +82,16 @@ export default function Dashboard() {
           <WeatherWidget />
         </motion.div>
 
-        {/* Top 3 Action Cards */}
         <motion.div 
           variants={containerVariants}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-1 lg:grid-cols-3 gap-6"
-        >
-          {/* Upload Card */}
+          className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
           <motion.div 
             variants={itemVariants}
             whileHover={{ y: -6, boxShadow: "0 12px 30px -10px rgba(0,0,0,0.04)" }}
-            className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between group min-h-[200px]"
-          >
+            className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between group min-h-[200px]">
             <div>
               <h2 className="font-bold text-slate-800 text-base group-hover:text-emerald-800 transition duration-300">Upload Another Plant</h2>
               <p className="text-slate-400 text-xs mt-0.5">Add a new plant to get started.</p>
@@ -103,25 +100,21 @@ export default function Dashboard() {
             <div className="mt-4 border-2 border-dashed border-slate-200 group-hover:border-emerald-300 rounded-xl flex-1 flex items-center justify-center cursor-pointer bg-slate-50/50 group-hover:bg-emerald-50/20 transition-all duration-300">
               <motion.div 
                 whileTap={{ scale: 0.92 }}
-                className="bg-white group-hover:bg-emerald-600 shadow-sm group-hover:shadow-emerald-200/50 p-2.5 rounded-full text-emerald-700 group-hover:text-white transform transition-all duration-300"
-              >
+                className="bg-white group-hover:bg-emerald-600 shadow-sm group-hover:shadow-emerald-200/50 p-2.5 rounded-full text-emerald-700 group-hover:text-white transform transition-all duration-300">
                 <FaPlus size={14} />
               </motion.div>
             </div>
           </motion.div>
 
-          {/* Reminder Card */}
           <motion.div 
             variants={itemVariants}
             whileHover={{ y: -6, boxShadow: "0 12px 30px -10px rgba(0,0,0,0.04)" }}
-            className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between min-h-[200px]"
-          >
+            className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between min-h-[200px]">
             <div>
               <h2 className="font-bold text-slate-800 text-base">Today's Reminder</h2>
               <motion.div 
                 whileHover={{ x: 4 }}
-                className="mt-4 bg-emerald-50/30 border border-emerald-50/60 rounded-xl p-2.5 flex items-center gap-3 cursor-pointer"
-              >
+                className="mt-4 bg-emerald-50/30 border border-emerald-50/60 rounded-xl p-2.5 flex items-center gap-3 cursor-pointer">
                 <div className="bg-blue-50 p-2 rounded-lg text-blue-500">
                   <FaTint size={12} />
                 </div>
@@ -140,7 +133,6 @@ export default function Dashboard() {
             </motion.button>
           </motion.div>
 
-          {/* Daily Tip Card */}
           <motion.div 
             variants={itemVariants}
             whileHover={{ y: -6, boxShadow: "0 12px 30px -10px rgba(16,185,129,0.08)" }}
@@ -165,7 +157,6 @@ export default function Dashboard() {
           </motion.div>
         </motion.div>
 
-        {/* Plants Section */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -184,7 +175,6 @@ export default function Dashboard() {
             </motion.button>
           </div>
 
-          {/* Plant Cards Grid Layout */}
           <motion.div 
             variants={containerVariants}
             initial="hidden"
@@ -196,8 +186,7 @@ export default function Dashboard() {
                 key={plant.name}
                 variants={itemVariants}
                 whileHover={{ y: -8, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.03)" }}
-                className="bg-white rounded-2xl border border-slate-100 p-3 shadow-sm flex flex-col justify-between group cursor-pointer"
-              >
+                className="bg-white rounded-2xl border border-slate-100 p-3 shadow-sm flex flex-col justify-between group cursor-pointer">
                 <div>
                   <div className="w-full h-44 bg-slate-100 rounded-xl overflow-hidden relative">
                     <motion.img 
@@ -220,7 +209,6 @@ export default function Dashboard() {
                     <span className={`w-1.5 h-1.5 rounded-full ${
                       plant.status === "Healthy" ? "bg-emerald-500 animate-pulse" : "bg-amber-500 animate-ping"
                     }`} />
-                    {/* Secondary static pulse anchor for absolute layout consistency */}
                     {plant.status !== "Healthy" && <span className="w-1.5 h-1.5 rounded-full bg-amber-500 absolute" />}
                     
                     <p className={`text-[11px] font-semibold ${
@@ -230,8 +218,7 @@ export default function Dashboard() {
 
                   <motion.button 
                     whileHover={{ scale: 1.15 }}
-                    className="text-slate-300 group-hover:text-slate-500 transition duration-300"
-                  >
+                    className="text-slate-300 group-hover:text-slate-500 transition duration-300">
                     {plant.status === "Healthy" ? (
                       <FaSun size={11} className="text-emerald-500" />
                     ) : (
