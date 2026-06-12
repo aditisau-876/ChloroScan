@@ -1,10 +1,23 @@
 import React, { useState } from 'react';
+import ReminderModal from "../components/ReminderModal";
 import { motion, AnimatePresence } from 'framer-motion';
-import { ScanLine, Plus, Droplet, Sprout, Layers, Calendar,User,CheckCircle2} from 'lucide-react';
-import logo from "../assets/logo.png";
+import { 
+  ScanLine, 
+  Plus, 
+  Droplet, 
+  Sprout, 
+  Layers, 
+  Calendar,
+  User,
+  CheckCircle2
+} from 'lucide-react';
+
 export default function Reminders() {
   const [activeCategory, setActiveCategory] = useState('All');
   const categories = ['All', 'Watering', 'Fertilizer', 'Repotting', 'Other'];
+  const [showModal, setShowModal] = useState(false);
+
+  // Reminder data structured exactly like the image list
   const [reminders, setReminders] = useState([
     {
       id: 1,
@@ -38,37 +51,53 @@ export default function Reminders() {
   };
 
   // Filter reminders based on active category
-  const filteredReminders = reminders.filter(reminder => 
+  const filteredReminders = reminders.filter(reminder =>
     activeCategory === 'All' ? true : reminder.category === activeCategory
   );
 
   return (
-    <div 
+    <div
       className="h-screen w-screen relative p-4 md:p-6 lg:p-8 flex justify-center items-center font-sans antialiased text-slate-800 overflow-hidden bg-cover bg-center bg-no-repeat"
-      style={{ 
-        backgroundImage: `url('https://images.unsplash.com/photo-1463936575829-25148e1db1b8?auto=format&fit=crop&q=80&w=1920')` 
+      style={{
+        backgroundImage: `url('https://images.unsplash.com/photo-1463936575829-25148e1db1b8?auto=format&fit=crop&q=80&w=1920')`
       }}
     >
       {/* Background Dim Backdrop Glass Blur */}
       <div className="absolute inset-0 bg-black/10 backdrop-blur-[2px] z-0" />
 
+      {/* Main Glassmorphism Dashboard Panel */}
       <motion.div 
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.4 }}
-        className="w-full max-w-6xl h-[90vh] bg-white/85 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_25px_60px_rgba(0,0,0,0.15)] border border-white/40 p-8 flex flex-col overflow-hidden z-10">
+        className="w-full max-w-5xl max-h-full bg-white/85 backdrop-blur-xl rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-white/40 p-6 md:p-8 flex flex-col overflow-hidden z-10"
+      >
         
-        <div className="flex items-center mb-6 flex-shrink-0">
-          <img src={logo} alt="ChloroScan Logo"className="h-12 object-contain"/>
+        {/* Top Header Navigation Line */}
+        <div className="flex items-center justify-between mb-6 flex-shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="bg-[#e8f5e9]/90 p-1.5 rounded-xl text-[#2d8a4e] shadow-xs">
+              <ScanLine className="w-5 h-5" />
+            </div>
+            <span className="text-xl font-bold text-[#1b4d3e] tracking-tight">
+              Chloro<span className="text-[#2d8a4e] font-medium">Scan</span>
+            </span>
+          </div>
+          
+          {/* User Profile Action Circle Icon */}
+          <div className="text-slate-500 hover:text-[#2d8a4e] p-1 cursor-pointer transition-colors">
+            <User className="w-6 h-6 stroke-[1.5]" />
+          </div>
         </div>
 
         <div className="flex items-center justify-between mb-8 flex-shrink-0">
           <h1 className="text-2xl md:text-3xl font-extrabold text-[#1b4d3e] tracking-tight">
             Plant Reminders
           </h1>
-          <motion.button 
+          <motion.button
             whileTap={{ scale: 0.97 }}
-            className="bg-[#2d8a4e] hover:bg-[#1f6337] text-white font-semibold px-5 py-2.5 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2">
+            className="bg-[#2d8a4e] hover:bg-[#1f6337] text-white font-semibold text-sm px-4 py-2 rounded-xl shadow-xs flex items-center gap-1.5 transition-colors"
+          >
             <Plus className="w-4 h-4 stroke-[2.5]" />
             Add Reminder
           </motion.button>
@@ -82,10 +111,13 @@ export default function Reminders() {
                 <button
                   key={category}
                   onClick={() => setActiveCategory(category)}
-                  className={`pb-3 text-sm font-semibold transition-all duration-200 relative text-center ${isActive? "text-[#2d8a4e]": "text-slate-400 hover:text-slate-600"}`}>
+                  className={`pb-2.5 text-sm font-semibold transition-colors duration-200 relative whitespace-nowrap ${
+                    isActive ? 'text-[#2d8a4e]' : 'text-slate-400 hover:text-slate-600'
+                  }`}
+                >
                   {category}
                   {isActive && (
-                    <motion.div 
+                    <motion.div
                       layoutId="activeCategoryLine"
                       className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#2d8a4e] rounded-full"
                       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
@@ -100,7 +132,7 @@ export default function Reminders() {
         <div className="flex-1 overflow-y-auto no-scrollbar min-h-0">
           <AnimatePresence mode="popLayout">
             {filteredReminders.length > 0 ? (
-              <motion.div 
+              <motion.div
                 layout
                 className="flex flex-col gap-3"
               >
@@ -113,7 +145,7 @@ export default function Reminders() {
                     exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
                     className=" bg-white/80 backdrop-blur-md border border-white/60 rounded-2xl p-4 flex items-center justify-between gap-4 shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 group">
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 bg-slate-100 rounded-2xl overflow-hidden border border-slate-100 flex-shrink-0">
+                      <div className="w-14 h-14 bg-slate-100 rounded-xl overflow-hidden border border-slate-100 flex-shrink-0">
                         <img 
                           src={reminder.image} 
                           alt={reminder.title} 
@@ -150,7 +182,7 @@ export default function Reminders() {
               </motion.div>
             ) : (
               /* Empty Placeholder State when no active entries match query filter */
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="h-full min-h-[220px] text-center text-slate-400 border-2 border-dashed border-slate-200/60 rounded-2xl flex flex-col items-center justify-center gap-2 bg-white/40"
@@ -163,6 +195,30 @@ export default function Reminders() {
         </div>
 
       </motion.div>
+      {showModal && (
+        <ReminderModal
+          closeModal={() => setShowModal(false)}
+          onSave={(data) => {
+            console.log("New Reminder:", data);
+
+            setReminders((prev) => [
+              ...prev,
+              {
+                id: Date.now(),
+                title: data.title,
+                time: data.date + " • " + data.time,
+                category: data.category,
+                icon: <Calendar className="w-5 h-5 text-green-500" />,
+                image:
+                  "https://images.unsplash.com/photo-1512428813834-c702c7702b78?auto=format&fit=crop&w=150&q=80",
+              },
+            ]);
+
+            setShowModal(false);
+          }}
+        />
+      )}
     </div>
+    
   );
 }
