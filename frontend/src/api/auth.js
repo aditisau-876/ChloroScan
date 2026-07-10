@@ -16,3 +16,47 @@ export const googleLogin = (token) => {
     token
   });
 };
+export const addPlant = (plantId) => {
+    return API.post(
+        `/myplants/${plantId}`,
+        {},
+        {
+            headers: {
+                Authorization:
+                    `Bearer ${localStorage.getItem("token")}`
+            }
+        }
+    );
+};
+
+
+export const removePlant = (plantId) => {
+
+    return API.delete(
+        `/myplants/${plantId}`,
+        {
+            headers: {
+                Authorization:
+                    `Bearer ${localStorage.getItem("token")}`
+            }
+        }
+    );
+};
+
+
+export const getMyPlants = () => {
+
+    return API.get(
+        "/myplants",
+        {
+            headers: {
+                Authorization:
+                    `Bearer ${localStorage.getItem("token")}`
+            }
+        }
+    );
+};
+
+export const searchPlants = (query) => {
+    return API.get(`/plants/search?query=${encodeURIComponent(query)}`);
+};
