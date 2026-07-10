@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Droplet, Sun, Layers, Thermometer, Cloud, Sprout, Heart,ScanLine,ChevronRight,ShieldCheck,Activity} from 'lucide-react';
 import { useLocation, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { addPlant, removePlant } from "../api/auth";
+import { addPlant, removePlant, checkPlant } from "../api/auth";
 import logo from "../assets/logo.png";
 export default function CareGuide() {
   const navigate = useNavigate();
@@ -11,38 +11,48 @@ export default function CareGuide() {
   const { modelName: urlModelName } = useParams();
   const modelName = location.state?.modelName || urlModelName;
   console.log("Location State:", location.state);
-console.log("Model Name:", modelName);
+  console.log("Model Name:", modelName);
   const [activeTab, setActiveTab] = useState('Care Guide');
   const [isFavorite,setIsFavorite]=useState(false);
-const [adding,setAdding]=useState(false);
+  const [adding,setAdding]=useState(false);
   const [plant, setPlant] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isInGarden, setIsInGarden] = useState(false);
   const tabs = ['Care Guide', 'Growth Info', 'Problems', 'Similar Plants', 'Medicinal Use'];
 useEffect(() => {
   console.log("Fetching plant:", modelName);
 
   if (!modelName) {
     console.log("No model name found");
-    setLoading(false);   // <-- here
+    setLoading(false); 
     return;
   }
 
-  fetch(`http://localhost:8000/plant/${encodeURIComponent(modelName)}`)
-    .then(res => {
-      console.log("Response status:", res.status);
-      return res.json();
-    })
-    .then(data => {
-      console.log("Plant data:", data);
-      setPlant(data);
-      setLoading(false);   
-    })
-    .catch(err => {
-      console.error("Fetch error:", err);
-      setLoading(false);   
-    });
+fetch(`http://localhost:8000/plant/${encodeURIComponent(modelName)}`)
+  .then(res => {
+    console.log("Response status:", res.status);
+    return res.json();
+  })
+  .then(async (data) => {
+    console.log("Plant data:", data);
 
-}, [modelName]);
+    setPlant(data);
+
+    try {
+      const res = await checkPlant(data.id);
+      setIsFavorite(res.data.added);
+
+    } catch (err) {
+      console.error(err);
+    }
+
+    setLoading(false);
+  })
+  .catch(err => {
+    console.error("Fetch error:", err);
+    setLoading(false);
+  });
+  }, [modelName]);
 
   const careDetails = plant
   ? [
@@ -86,29 +96,23 @@ useEffect(() => {
   : [];
 
   const toggleGarden = async () => {
+    try {
 
-    try{
-
-        if(isFavorite){
+        if (isFavorite) {
 
             await removePlant(plant.id);
-
             setIsFavorite(false);
 
-        }else{
+        } else {
 
             await addPlant(plant.id);
-
             setIsFavorite(true);
 
         }
 
-    }catch(err){
-
+    } catch (err) {
         console.log(err);
-
     }
-
 };
 
   const containerVariants = {
@@ -182,28 +186,37 @@ if (!plant) {
             <p className="text-slate-500 italic text-base mb-4 font-medium">{plant.scientific_name}</p>
             
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
-              <motion.button 
-                onClick={toggleGarden}
-                whileTap={{ scale: 0.97 }}
-                className="bg-[#2d8a4e] hover:bg-[#206639] text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-sm transition-colors duration-200 flex items-center gap-2"
-              >
-                {isFavorite ? "Added to Garden" : "Add to My Garden"}
-                <ChevronRight className="w-3.5 h-3.5 opacity-80" />
-              </motion.button>
-              
-              <motion.button 
-                whileTap={{ scale: 0.93 }}
-                onClick={toggleGarden}
-                className={`border p-2.5 rounded-xl transition-all duration-300 shadow-2xs backdrop-blur-xs ${
-                  isFavorite 
-                    ? 'bg-rose-50/90 border-rose-200 text-rose-500' 
-                    : 'border-slate-200/80 bg-white/50 text-slate-400 hover:text-slate-600 hover:bg-white'
-                }`}
-              >
-                <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : 'fill-none'}`} />
-              </motion.button>
-            </div>
+<div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
+  <motion.button
+    onClick={toggleGarden}
+    whileTap={{ scale: 0.97 }}
+    className={`font-semibold text-sm px-5 py-2.5 rounded-xl shadow-sm transition-colors duration-200 flex items-center gap-2 ${
+      isFavorite
+        ? "bg-red-500 hover:bg-red-600 text-white"
+        : "bg-[#2d8a4e] hover:bg-[#206639] text-white"
+    }`}
+  >
+    {isFavorite ? "Remove from Garden" : "Add to My Garden"}
+
+    <ChevronRight className="w-3.5 h-3.5 opacity-80" />
+  </motion.button>
+
+  <motion.button
+    whileTap={{ scale: 0.93 }}
+    onClick={toggleGarden}
+    className={`border p-2.5 rounded-xl transition-all duration-300 shadow-2xs backdrop-blur-xs ${
+      isFavorite
+        ? "bg-rose-50/90 border-rose-200 text-rose-500"
+        : "border-slate-200/80 bg-white/50 text-slate-400 hover:text-slate-600 hover:bg-white"
+    }`}
+  >
+    <Heart
+      className={`w-4 h-4 ${
+        isFavorite ? "fill-current" : "fill-none"
+      }`}
+    />
+  </motion.button>
+</div>
           </div>
         </div>
 

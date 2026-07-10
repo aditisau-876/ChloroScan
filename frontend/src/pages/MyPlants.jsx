@@ -13,31 +13,38 @@ export default function MyPlants() {
 }, []);
 
 const loadPlants = async () => {
-    try {
-        const res = await getMyPlants();
-        setPlants(res.data);
-    } catch (err) {
-        console.log(err);
-    }
+  try {
+    const res = await getMyPlants();
+
+    console.log("My Garden:", res.data);
+
+    // Everything returned from /myplants is already in the garden
+    const plantsWithStatus = res.data.map((plant) => ({
+      ...plant,
+      added: true,
+    }));
+
+    setPlants(plantsWithStatus);
+  } catch (err) {
+    console.log(err);
+  }
 };
 const [search, setSearch] = useState("");
 const handleSearch = async () => {
+  if (!search.trim()) {
+    loadPlants();
+    return;
+  }
 
-    if (!search.trim()) {
-        loadPlants();
-        return;
-    }
+  try {
+    const res = await searchPlants(search);
 
-    try {
+    console.log("Search Results:", res.data);
 
-        const res = await searchPlants(search);
-
-        setPlants(res.data);
-
-    } catch (err) {
-        console.log(err);
-    }
-
+    setPlants(res.data);
+  } catch (err) {
+    console.log(err);
+  }
 };
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -100,6 +107,8 @@ const handleSearch = async () => {
             <input 
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {handleSearch();}}}
                 placeholder="Search for a plant..."
               className="w-full pl-11 pr-14 py-2.5 bg-[#F8F9FA] border border-gray-200 rounded-xl focus:outline-none focus:border-emerald-500 text-sm transition-all focus:shadow-inner" />
             <motion.button 
@@ -182,10 +191,19 @@ const handleSearch = async () => {
               {plant.plant_name}
             </h4>
 
-            <div className="flex items-center gap-1.5 text-xs font-semibold mt-1 text-emerald-600">
-              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-              Added to Garden
-            </div>
+<div
+  className={`flex items-center gap-1.5 text-xs font-semibold mt-1 ${
+    plant.added === true ? "text-emerald-600" : "text-gray-500"
+  }`}
+>
+  <span
+    className={`w-2 h-2 rounded-full ${
+      plant.added === true ? "bg-emerald-500" : "bg-gray-400"
+    }`}
+  ></span>
+
+  {plant.added === true ? "Added to Garden" : "Not in Garden"}
+</div>
 
           </div>
 
