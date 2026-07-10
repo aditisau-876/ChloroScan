@@ -13,17 +13,12 @@ function App() {
     <Routes>
 
       <Route path="/" element={<LandingPage />} />
-
       <Route path="/login" element={<Login />} />
-
       <Route path="/signup" element={<Signup />} />
-
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-
       <Route path="/myplants" element={<ProtectedRoute><MyPlants /></ProtectedRoute>} />
-
-      <Route path="/careguide" element={<ProtectedRoute><CareGuide /></ProtectedRoute>}/>
-
+      <Route path="/careguide" element={<ProtectedRoute><CareGuide/></ProtectedRoute>}/>
+      <Route path="/careguide/:modelName" element={<ProtectedRoute><CareGuide/></ProtectedRoute>} />
       <Route path="/reminders"element={<ProtectedRoute><Reminders /></ProtectedRoute>}/>
 
     </Routes>

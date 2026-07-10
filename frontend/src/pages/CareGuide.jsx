@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Droplet, Sun, Layers, Thermometer, Cloud, Sprout, Heart,ScanLine,ChevronRight,ShieldCheck,Activity} from 'lucide-react';
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { addPlant, removePlant } from "../api/auth";
 import logo from "../assets/logo.png";
 export default function CareGuide() {
+  const navigate = useNavigate();
   const location = useLocation();
-  const modelName = location.state?.modelName;
+  const { modelName: urlModelName } = useParams();
+  const modelName = location.state?.modelName || urlModelName;
   console.log("Location State:", location.state);
 console.log("Model Name:", modelName);
   const [activeTab, setActiveTab] = useState('Care Guide');
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavorite,setIsFavorite]=useState(false);
+const [adding,setAdding]=useState(false);
   const [plant, setPlant] = useState(null);
   const [loading, setLoading] = useState(true);
   const tabs = ['Care Guide', 'Growth Info', 'Problems', 'Similar Plants', 'Medicinal Use'];
@@ -30,11 +35,11 @@ useEffect(() => {
     .then(data => {
       console.log("Plant data:", data);
       setPlant(data);
-      setLoading(false);   // <-- success
+      setLoading(false);   
     })
     .catch(err => {
       console.error("Fetch error:", err);
-      setLoading(false);   // <-- error
+      setLoading(false);   
     });
 
 }, [modelName]);
@@ -80,6 +85,32 @@ useEffect(() => {
     ]
   : [];
 
+  const toggleGarden = async () => {
+
+    try{
+
+        if(isFavorite){
+
+            await removePlant(plant.id);
+
+            setIsFavorite(false);
+
+        }else{
+
+            await addPlant(plant.id);
+
+            setIsFavorite(true);
+
+        }
+
+    }catch(err){
+
+        console.log(err);
+
+    }
+
+};
+
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -122,8 +153,7 @@ if (!plant) {
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="w-full max-w-5xl max-h-full bg-white/85 backdrop-blur-xl rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-white/40 p-5 md:p-8 flex flex-col overflow-hidden z-10"
-      >
+        className="w-full max-w-5xl max-h-full bg-white/85 backdrop-blur-xl rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-white/40 p-5 md:p-8 flex flex-col overflow-hidden z-10">
         
         {/* Top Header Row */}
         <div className="flex items-center mb-6 flex-shrink-0">
@@ -154,16 +184,17 @@ if (!plant) {
             {/* Action Buttons */}
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
               <motion.button 
+                onClick={toggleGarden}
                 whileTap={{ scale: 0.97 }}
                 className="bg-[#2d8a4e] hover:bg-[#206639] text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-sm transition-colors duration-200 flex items-center gap-2"
               >
-                Add to My Garden
+                {isFavorite ? "Added to Garden" : "Add to My Garden"}
                 <ChevronRight className="w-3.5 h-3.5 opacity-80" />
               </motion.button>
               
               <motion.button 
                 whileTap={{ scale: 0.93 }}
-                onClick={() => setIsFavorite(!isFavorite)}
+                onClick={toggleGarden}
                 className={`border p-2.5 rounded-xl transition-all duration-300 shadow-2xs backdrop-blur-xs ${
                   isFavorite 
                     ? 'bg-rose-50/90 border-rose-200 text-rose-500' 
@@ -249,22 +280,93 @@ if (!plant) {
             )}
 
             {/* General fallback container for remaining loading sub-tabs */}
-            {activeTab !== 'Care Guide' && activeTab !== 'Medicinal Use' && (
-              <motion.div 
-                key="placeholder"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="h-full min-h-[180px] text-center text-slate-500 border-2 border-dashed border-slate-200/60 rounded-xl flex flex-col items-center justify-center gap-1.5 bg-white/40 backdrop-blur-xs"
-              >
-                <Sprout className="w-6 h-6 text-slate-400 stroke-1 animate-pulse" />
-                <span className="text-xs font-semibold tracking-wide">{activeTab} parameters loading...</span>
-              </motion.div>
-            )}
+            {activeTab === "Growth Info" && (
+  <motion.div
+    key="growth-info"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    className="bg-white/70 rounded-xl p-6 shadow-sm"
+  >
+    <h2 className="text-2xl font-bold text-[#1b4d3e] mb-4">
+      Growth Information
+    </h2>
+
+    <p className="text-slate-700 leading-relaxed mb-5">
+      {plant.description}
+    </p>
+
+    <div className="flex items-center gap-3">
+      <span className="font-semibold text-[#1b4d3e]">
+        🌸 Bloom Time:
+      </span>
+
+      <span>{plant.bloom_time}</span>
+    </div>
+  </motion.div>
+)}
+
+{activeTab === "Problems" && (
+  <motion.div
+    key="problems"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    className="bg-white/70 rounded-xl p-6 shadow-sm"
+  >
+    <h2 className="text-2xl font-bold text-[#1b4d3e] mb-4">
+      Common Problems
+    </h2>
+
+    <p className="text-slate-700 leading-relaxed">
+      {plant.common_diseases}
+    </p>
+  </motion.div>
+)}
+{activeTab === "Similar Plants" && (
+  <motion.div
+    key="similar"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    className="grid grid-cols-2 gap-4"
+  >
+    {plant.similar_plants.map((item) => (
+      <motion.div
+        key={item.id}
+        whileHover={{ y: -4, scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={() => {
+    console.log(item);
+    navigate(
+        `/careguide/${encodeURIComponent(item.model_name)}`,
+        {
+            state: {
+                modelName: item.model_name
+            }
+        }
+    );
+}}
+        className="bg-white rounded-xl p-4 shadow cursor-pointer transition-all duration-300 hover:shadow-lg"
+      >
+        <img
+          src={item.image_url}
+          alt={item.plant_name}
+          className="h-32 w-full object-cover rounded-lg"
+        />
+
+        <h3 className="mt-3 font-bold text-[#1b4d3e]">
+          {item.plant_name}
+        </h3>
+
+        <p className="text-sm italic text-gray-500">
+          {item.scientific_name}
+        </p>
+      </motion.div>
+    ))}
+  </motion.div>
+)}
           </AnimatePresence>
         </div>
-
-      </motion.div>
-    </div>
-  );
-}
+        </motion.div>
+        </div>
+)}
