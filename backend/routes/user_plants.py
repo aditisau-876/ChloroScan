@@ -37,6 +37,29 @@ def get_my_plants(
 
     return [dict(row._mapping) for row in rows]
 
+@router.get("/check/{plant_id}")
+def check_plant(
+    plant_id: int,
+    db: Session = Depends(get_db),
+    user=Depends(get_current_user)
+):
+
+    row = db.execute(
+        text("""
+            SELECT 1
+            FROM user_plants
+            WHERE user_id=:user_id
+            AND plant_id=:plant_id
+        """),
+        {
+            "user_id": user.id,
+            "plant_id": plant_id
+        }
+    ).fetchone()
+
+    return {
+        "added": row is not None
+    }
 
 @router.post("/{plant_id}")
 def add_plant(
