@@ -6,17 +6,27 @@ export default function ReminderModal({
   onSave,
 }) {
   const [formData, setFormData] = useState({
-    plant: "",
-    type: "Watering",
-    date: "",
-    time: "",
-    notes: "",
-  });
+  plant: "",
+  type: "Watering",
+  date: "",
+  time: "",
+  repeat: "None",
+  priority: "Medium",
+  notes: "",
+});
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    onSave(formData);
+    onSave({
+  plant_name: formData.plant,
+  reminder_type: formData.type,
+  reminder_date: formData.date,
+  reminder_time: formData.time,
+  repeat_type: formData.repeat,
+  priority: formData.priority,
+  notes: formData.notes,
+});
 
     closeModal();
   };
@@ -101,6 +111,35 @@ export default function ReminderModal({
             required
           />
 
+          <select
+            value={formData.repeat}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                repeat: e.target.value,
+              })
+            }
+            className="w-full border rounded-xl px-4 py-3">
+            <option value="None">Does not repeat</option>
+            <option value="Daily">Every Day</option>
+            <option value="Weekly">Every Week</option>
+            <option value="Monthly">Every Month</option>
+          </select>
+
+          <select
+            value={formData.priority}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                priority: e.target.value,
+              })
+            }
+            className="w-full border rounded-xl px-4 py-3">
+            <option value="Low">Low Priority</option>
+            <option value="Medium">Medium Priority</option>
+            <option value="High">High Priority</option>
+          </select>
+
           <textarea
             placeholder="Notes (optional)"
             rows="3"
@@ -118,7 +157,7 @@ export default function ReminderModal({
             type="submit"
             className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold transition"
           >
-            Save Reminder
+            Create Reminder
           </button>
         </form>
       </div>

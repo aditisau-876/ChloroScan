@@ -82,3 +82,35 @@ export const searchPlants = (query) => {
         }
     );
 };
+export const createReminder = async (data) => {
+  return axios.post(
+    "http://127.0.0.1:8000/reminders",
+    data,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
+  );
+};
+export const getReminders = async () => {
+  return axios.get(
+    "http://127.0.0.1:8000/reminders",
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
+  );
+};
+export const completeReminder = async (id) => {
+  return axios.put(
+    `http://127.0.0.1:8000/reminders/${id}/complete`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }
+  );
+};

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import ReminderModal from "../components/ReminderModal";
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -11,39 +11,26 @@ import {
   User,
   CheckCircle2
 } from 'lucide-react';
-
+import logo from "../assets/logo.png";
+import { getMyPlants, getReminders,createReminder,completeReminder} from "../api/auth";
 export default function Reminders() {
   const [activeCategory, setActiveCategory] = useState('All');
-  const categories = ['All', 'Watering', 'Fertilizer', 'Repotting', 'Other'];
+  const categories = ["All","Watering","Fertilizer","Repotting","Pruning",];
   const [showModal, setShowModal] = useState(false);
 
-  // Reminder data structured exactly like the image list
-  const [reminders, setReminders] = useState([
-    {
-      id: 1,
-      title: 'Water Snake Plant',
-      time: 'Tomorrow, 08:00 AM',
-      category: 'Watering',
-      icon: <Droplet className="w-5 h-5 text-sky-500 fill-sky-100" />,
-      image: 'https://images.unsplash.com/photo-1599599810769-bcde5a160d32?auto=format&fit=crop&q=80&w=150&h=150'
-    },
-    {
-      id: 2,
-      title: 'Fertilize Peace Lily',
-      time: 'May 28, 2026 • 09:00 AM',
-      category: 'Fertilizer',
-      icon: <Sprout className="w-5 h-5 text-amber-500" />,
-      image: 'https://images.unsplash.com/photo-1593696954577-ab3d39317b97?auto=format&fit=crop&q=80&w=150&h=150'
-    },
-    {
-      id: 3,
-      title: 'Repot Aloe Vera',
-      time: 'June 2, 2026 • 10:00 AM',
-      category: 'Repotting',
-      icon: <Layers className="w-5 h-5 text-purple-500" />,
-      image: 'https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?auto=format&fit=crop&q=80&w=150&h=150'
-    }
-  ]);
+  const [reminders, setReminders] = useState([]);
+  useEffect(() => {
+  loadReminders();
+}, []);
+
+const loadReminders = async () => {
+  try {
+    const res = await getReminders();
+    setReminders(res.data);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
   // Handle marking a reminder as done with a quick exit animation
   const handleMarkDone = (id) => {
@@ -74,21 +61,13 @@ export default function Reminders() {
       >
         
         {/* Top Header Navigation Line */}
-        <div className="flex items-center justify-between mb-6 flex-shrink-0">
-          <div className="flex items-center gap-2.5">
-            <div className="bg-[#e8f5e9]/90 p-1.5 rounded-xl text-[#2d8a4e] shadow-xs">
-              <ScanLine className="w-5 h-5" />
-            </div>
-            <span className="text-xl font-bold text-[#1b4d3e] tracking-tight">
-              Chloro<span className="text-[#2d8a4e] font-medium">Scan</span>
-            </span>
-          </div>
-          
-          {/* User Profile Action Circle Icon */}
-          <div className="text-slate-500 hover:text-[#2d8a4e] p-1 cursor-pointer transition-colors">
-            <User className="w-6 h-6 stroke-[1.5]" />
-          </div>
-        </div>
+          <div className="flex items-center justify-between mb-6 flex-shrink-0"><div className="flex items-center mb-6 flex-shrink-0">
+          <img
+            src={logo}
+            alt="ChloroScan Logo"
+            className="h-12 object-contain"
+          />
+        </div></div>
 
         <div className="flex items-center justify-between mb-8 flex-shrink-0">
           <h1 className="text-2xl md:text-3xl font-extrabold text-[#1b4d3e] tracking-tight">
@@ -96,8 +75,8 @@ export default function Reminders() {
           </h1>
           <motion.button
             whileTap={{ scale: 0.97 }}
-            className="bg-[#2d8a4e] hover:bg-[#1f6337] text-white font-semibold text-sm px-4 py-2 rounded-xl shadow-xs flex items-center gap-1.5 transition-colors"
-          >
+            onClick={() => setShowModal(true)}
+            className="bg-[#2d8a4e] hover:bg-[#1f6337] text-white font-semibold text-sm px-4 py-2 rounded-xl shadow-xs flex items-center gap-1.5 transition-colors">
             <Plus className="w-4 h-4 stroke-[2.5]" />
             Add Reminder
           </motion.button>
@@ -146,32 +125,31 @@ export default function Reminders() {
                     className=" bg-white/80 backdrop-blur-md border border-white/60 rounded-2xl p-4 flex items-center justify-between gap-4 shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 group">
                     <div className="flex items-center gap-4">
                       <div className="w-14 h-14 bg-slate-100 rounded-xl overflow-hidden border border-slate-100 flex-shrink-0">
-                        <img 
-                          src={reminder.image} 
-                          alt={reminder.title} 
+                        <img
+                          src="https://images.unsplash.com/photo-1512428813834-c702c7702b78?auto=format&fit=crop&w=150&q=80" 
+                          alt={reminder.plant_name}
                           className="w-full h-full object-cover"
                         />
                       </div>
                       <div>
                         <h3 className="font-bold text-[#1b4d3e] text-base mb-0.5">
-                          {reminder.title}
+                          {reminder.plant_name}
                         </h3>
                         <p className="text-slate-400 font-medium text-xs flex items-center gap-1">
                           <Calendar className="w-3 h-3 opacity-70" />
-                          {reminder.time}
+                          {new Date(`${reminder.reminder_date}T${reminder.reminder_time}`).toLocaleString()}
                         </p>
                       </div>
                     </div>
 
                     {/* Middle: Action Task Category Icon Indicator */}
-                    <div className="hidden sm:block p-2 bg-slate-50/80 rounded-xl border border-slate-100">
-                      {reminder.icon}
-                    </div>
+                    <div className="hidden sm:block"><span className="text-xs px-3 py-1 rounded-full bg-green-100 text-green-700">{reminder.reminder_type}</span></div>
 
                     {/* Right: Mark Done Interactive Button Action */}
                     <motion.button
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => handleMarkDone(reminder.id)}
+                      onClick={async () => {await completeReminder(reminder.id);
+                      loadReminders();}}
                       className="border border-slate-200 text-slate-600 hover:text-emerald-600 hover:border-emerald-200 hover:bg-emerald-50/50 font-semibold text-xs px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 flex-shrink-0 bg-white"
                     >
                       <CheckCircle2 className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-emerald-600" />
@@ -195,29 +173,21 @@ export default function Reminders() {
         </div>
 
       </motion.div>
-      {showModal && (
-        <ReminderModal
-          closeModal={() => setShowModal(false)}
-          onSave={(data) => {
-            console.log("New Reminder:", data);
+          {showModal && (
+  <ReminderModal
+    closeModal={() => setShowModal(false)}
+    onSave={async (data) => {
+      try {
+        await createReminder(data);
+        await loadReminders();
+      } catch (err) {
+        console.log(err);
+      }
 
-            setReminders((prev) => [
-              ...prev,
-              {
-                id: Date.now(),
-                title: data.title,
-                time: data.date + " • " + data.time,
-                category: data.category,
-                icon: <Calendar className="w-5 h-5 text-green-500" />,
-                image:
-                  "https://images.unsplash.com/photo-1512428813834-c702c7702b78?auto=format&fit=crop&w=150&q=80",
-              },
-            ]);
-
-            setShowModal(false);
-          }}
-        />
-      )}
+      setShowModal(false);
+    }}
+  />
+)}
     </div>
     
   );
