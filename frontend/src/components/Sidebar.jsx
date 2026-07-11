@@ -1,16 +1,11 @@
-import {
-  FaHome,
-  FaLeaf,
-  FaBell,
-  FaSignOutAlt,
-} from "react-icons/fa";
-
+import {FaHome,FaLeaf,FaBell,FaSignOutAlt,FaBars,FaTimes,} from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
 
 export default function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
-
+  const [open, setOpen] = useState(false);
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -36,7 +31,49 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 bg-[#0F3A20] text-white p-5 flex flex-col justify-between shadow-xl select-none flex-shrink-0">
+    <>
+    <button
+      onClick={() => setOpen(true)}
+      className="lg:hidden fixed top-4 left-4 z-50 bg-[#0F3A20] text-white p-3 rounded-xl shadow-lg"
+    >
+      <FaBars />
+    </button>
+    {open && (
+      <div
+        className="fixed inset-0 bg-black/40 z-40 lg:hidden"onClick={() => setOpen(false)}/>)}
+    <aside
+      className={`
+    fixed lg:static
+    top-0 left-0
+    h-screen lg:h-screen
+    w-64
+    bg-[#0F3A20]
+    text-white
+    p-5
+    flex
+    flex-col
+    justify-between
+    flex-shrink-0
+    shadow-xl
+    z-50
+    transform
+    transition-transform
+    duration-300
+        ${
+          open
+            ? "translate-x-0"
+            : "-translate-x-full lg:translate-x-0"
+        }
+      `}
+    >
+        <div className="lg:hidden flex justify-end mb-4">
+    <button
+      onClick={() => setOpen(false)}
+      className="text-white hover:text-green-300"
+    >
+      <FaTimes size={20} />
+    </button>
+  </div>
 
       <div>
         <div className="flex items-center gap-3 px-2 py-2">
@@ -50,7 +87,10 @@ export default function Sidebar() {
           {menuItems.map((item) => (
             <button
               key={item.name}
-              onClick={() => navigate(item.path)}
+              onClick={() => {
+                navigate(item.path);
+                setOpen(false);
+              }}
               className={`flex items-center gap-4 px-4 py-3 rounded-xl text-sm transition-all duration-300 w-full text-left cursor-pointer
                 ${
                   location.pathname === item.path
@@ -68,7 +108,10 @@ export default function Sidebar() {
 
       <div className="pt-3 border-t border-white/10">
         <button
-          onClick={handleLogout}
+          onClick={() => {
+            handleLogout();
+            setOpen(false);
+          }}
           className="flex items-center gap-4 text-slate-300 hover:text-red-200 hover:bg-red-500/20 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 text-left w-full cursor-pointer"
         >
           <FaSignOutAlt size={15} />
@@ -76,5 +119,6 @@ export default function Sidebar() {
         </button>
       </div>
     </aside>
+     </>
   );
 }
