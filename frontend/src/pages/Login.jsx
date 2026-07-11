@@ -22,7 +22,8 @@ const Login = () => {
   setError("");
 };
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
   try {
     setLoading(true);
 
@@ -69,91 +70,69 @@ const Login = () => {
             Login to access your plant care guide.
           </p>
 
-          <div className="mt-7">
+        <form className="mt-7" onSubmit={handleLogin}>
+          <div><label className="text-gray-700 font-medium">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              placeholder="Enter your email"
+              className="w-full mt-2 p-4 border border-gray-300 rounded-2xl outline-none focus:border-green-600"
+            />
+          </div>
 
-            <div>
-              <label className="text-gray-700 font-medium">
-                Email
-              </label>
+          <div className="mt-5">
+            <div className="flex items-center justify-between">
+              <label className="text-gray-700 font-medium">Password</label>
+              <button type="button" className="text-green-600 text-sm hover:underline">Forgot password?</button></div>
+            <input
+              name="password"
+              type="password"
+              value={form.password}
+              onChange={handleChange}
+              placeholder="Enter your password"
+              className="w-full mt-2 p-4 border border-gray-300 rounded-2xl outline-none focus:border-green-600"
+            />
+          </div>
 
-              <input
-                type="email"
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                placeholder="Enter your email"
-                className="w-full mt-2 p-4 border border-gray-300 rounded-2xl outline-none focus:border-green-600"
-              />
-            </div>
+          {error && (<div className="bg-red-50 border border-red-200 text-red-600 rounded-xl p-3 mt-4 text-sm">{error}</div>)}
 
-            <div className="mt-5">
-              <div className="flex items-center justify-between">
-
-                <label className="text-gray-700 font-medium">
-                  Password
-                </label>
-
-                <button className="text-green-600 text-sm hover:underline">
-                  Forgot password?
-                </button>
-              </div>
-
-              <input
-                name="password"
-                type="password"
-                value={form.password}
-                onChange={handleChange}
-                placeholder="Enter your password"
-                className="w-full mt-2 p-4 border border-gray-300 rounded-2xl outline-none focus:border-green-600"
-              />
-            </div>
-            {error && (<div className="bg-red-50 border border-red-200 text-red-600 rounded-xl p-3 mt-4 text-sm">{error}</div>)}
-
-
-            <button     
-              onClick={handleLogin}
-              disabled={loading}
-              className="w-full mt-6 bg-green-600 text-white py-4 rounded-2xl text-lg font-medium hover:bg-green-700 transition disabled:opacity-50"
-            >
-              {loading ? "Logging in..." : "Login"}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full mt-6 bg-green-600 text-white py-4 rounded-2xl text-lg font-medium hover:bg-green-700 transition disabled:opacity-50">{loading ? "Logging in..." : "Login"}
             </button>
-            <div className="flex items-center gap-4 my-5">
-              <div className="flex-1 h-[1px] bg-gray-200"></div>
-              <p className="text-gray-400">or</p>
-              <div className="flex-1 h-[1px] bg-gray-200"></div>
-            </div>
 
-            <div className="flex justify-center">
+          <div className="flex items-center gap-4 my-5">
+            <div className="flex-1 h-[1px] bg-gray-200"></div>
+            <p className="text-gray-400">or</p>
+            <div className="flex-1 h-[1px] bg-gray-200"></div>
+          </div>
+
+          <div className="flex justify-center">
             <GoogleLogin
-              onSuccess={async (credentialResponse) => {
+            onSuccess={async (credentialResponse) => {
                 try {
-                  const res = await googleLogin(credentialResponse.credential);
-                  localStorage.setItem("token",res.data.token);
-                  localStorage.setItem("user",JSON.stringify(res.data.user));
+                const res = await googleLogin(credentialResponse.credential);
+
+                  localStorage.setItem("token", res.data.token);
+                  localStorage.setItem("user", JSON.stringify(res.data.user));
+
                   navigate("/dashboard");
-                  } catch (error) {
-                    console.error(error);
-                  }
+                } catch (error) {console.error(error);}
                 }}
-                onError={() => {console.log("Google Login Failed");
-                text="signin_with";
-                }}
-              />
-            </div>
+                onError={() => {console.log("Google Login Failed");}}/></div>
 
             <p className="text-center text-gray-500 mt-6">
-              Don’t have an account?{" "}
-              <button
-                onClick={() => navigate("/signup")}
-                className="text-green-600 font-medium hover:underline">
-                Sign up
-              </button>
-            </p>
-          </div>
+              Don't have an account?{" "}
+              <button type="button" onClick={() => navigate("/signup")}className="text-green-600 font-medium hover:underline">Sign up</button></p>
+
+          </form>
+
         </div>
       </div>
     </div>
   );
 };
-
 export default Login;

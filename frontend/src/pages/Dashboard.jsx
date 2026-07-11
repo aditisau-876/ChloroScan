@@ -4,54 +4,46 @@ import { motion } from "framer-motion";
 import { FaPlus, FaTint, FaInfoCircle, FaSun, FaLightbulb, FaArrowRight, FaLeaf } from "react-icons/fa";
 import WeatherWidget from "../components/WeatherWidget";
 import Sidebar from "../components/Sidebar";
-import { getMyPlants, getReminders } from "../api/auth";
+import UploadModal from "../components/UploadModal";
+import { getMyPlants, getReminders, getDashboardReminder } from "../api/auth";
+import dailyTips from "../data/dailyTips";
 const user = JSON.parse(localStorage.getItem("user"));
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const [showUploadModal, setShowUploadModal] = useState(false);
   const [totalPlants, setTotalPlants] = useState(0);
   const [plants, setPlants] = useState([]);
-  const [nextReminder, setNextReminder] = useState(null);
+  const [dashboardReminder, setDashboardReminder] = useState(null);
   useEffect(() => {
     loadPlants();
-    loadReminder();
+    loadDashboardReminder();
 }, []);
 
   const loadPlants = async () => {
     try {
       const res = await getMyPlants();
       setTotalPlants(res.data.length);
-      // show only first four plants
       setPlants(res.data.slice(0, 4));
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  const loadReminder = async () => {
-  try {
-    const res = await getReminders();
+    } catch (err) {console.log(err);
+    }};
 
-    if (res.data.length > 0) {
-      setNextReminder(res.data[0]);
+const loadDashboardReminder = async () => {
+    try{
+        const res = await getDashboardReminder();
+        setDashboardReminder(res.data);
     }
-  } catch (err) {
-    console.log(err);
-  }
-};
+    catch(err){console.log(err);
+    }};
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/login");
   };
+
 const containerVariants = {
   hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.08,
-    },
-  },
-};
+  show: {opacity: 1, transition: {staggerChildren: 0.08,},},};
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -66,13 +58,21 @@ const itemVariants = {
   },
 };
 
+const today = new Date();
+
+const tipIndex =
+  (today.getFullYear() * 1000 +
+    today.getMonth() * 100 +
+    today.getDate()) %
+  dailyTips.length;
+
+const todaysTip = dailyTips[tipIndex];
+
   return (
     <div className="h-screen w-screen overflow-hidden bg-[#F8FAFC] flex font-sans antialiased text-slate-800">
       <Sidebar />
-
       <main className="flex-1 p-8 max-w-[1450px] mx-auto w-full flex flex-col gap-6 overflow-y-auto">
         
-        {/* Header Animation */}
         <motion.div 
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -112,7 +112,7 @@ const itemVariants = {
             </div>
 
             <div
-  onClick={() => navigate("/")}
+  onClick={() => setShowUploadModal(true)}
   className="mt-4 border-2 border-dashed border-slate-200 group-hover:border-emerald-300 rounded-xl flex-1 flex items-center justify-center cursor-pointer bg-slate-50/50 group-hover:bg-emerald-50/20 transition-all duration-300"
 >
               <motion.div 
@@ -136,31 +136,58 @@ const itemVariants = {
       Today's Reminder
     </h2>
 
-    {nextReminder ? (
+    {dashboardReminder ? (
       <motion.div
         whileHover={{ x: 4 }}
         onClick={() => navigate("/reminders")}
         className="mt-4 bg-emerald-50/30 border border-emerald-50/60 rounded-xl p-2.5 flex items-center gap-3 cursor-pointer"
       >
         <div className="bg-blue-50 p-2 rounded-lg text-blue-500">
-          <FaTint size={12} />
-        </div>
+  {dashboardReminder.reminder_type === "Watering" && <FaTint size={12} />}
+  {dashboardReminder.reminder_type === "Fertilizer" && <FaLeaf size={12} />}
+  {dashboardReminder.reminder_type === "Repotting" && <FaPlus size={12} />}
+  {dashboardReminder.reminder_type === "Pruning" && <FaSun size={12} />}
+</div>
 
         <div>
           <h4 className="text-xs font-bold text-slate-800">
-            {nextReminder.reminder_type} {nextReminder.plant_name}
+            {dashboardReminder.reminder_type} {dashboardReminder.plant_name}
           </h4>
-
+          <div className="flex items-center gap-2 mt-1">
+  <span
+    className={`text-[10px] px-2 py-0.5 rounded-full font-semibold
+      ${
+        dashboardReminder.priority === "High"
+          ? "bg-red-100 text-red-700"
+          : dashboardReminder.priority === "Medium"
+          ? "bg-yellow-100 text-yellow-700"
+          : "bg-green-100 text-green-700"
+      }`}
+  >
+    {dashboardReminder.priority}
+  </span>
+</div>
           <p className="text-[10px] text-slate-400 font-semibold mt-0.5">
-            {new Date(
-              `${nextReminder.reminder_date}T${nextReminder.reminder_time}`
-            ).toLocaleString()}
-          </p>
+  {new Date(
+    `${dashboardReminder.reminder_date}T${dashboardReminder.reminder_time}`
+  ).toLocaleString("en-IN", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  })}
+</p>
         </div>
       </motion.div>
     ) : (
       <div className="mt-6 text-center text-gray-400 text-sm">
-        🌿 No upcoming reminders
+        <div className="mt-8 flex flex-col items-center text-gray-400">
+    <FaLeaf className="text-2xl mb-2" />
+    <p className="font-semibold">
+        You're all caught up!
+    </p>
+    <p className="text-xs mt-1">
+        No upcoming reminders.
+    </p>
+</div>
       </div>
     )}
   </div>
@@ -183,15 +210,13 @@ const itemVariants = {
                 <div className="p-1.5 bg-emerald-600 text-white rounded-lg shadow-sm">
                   <FaLightbulb size={11} />
                 </div>
-                <h3 className="text-xs font-bold text-slate-800 tracking-wide">Daily Tip</h3>
+                <h2 className="text-xm font-bold text-slate-800 tracking-wide">Today's Plant Tip</h2>
               </div>
-              <p className="text-[11px] text-slate-600 leading-relaxed font-medium mt-3.5">
-                Wipe the leaves of your plants regularly to keep them dust free and allow better photosynthesis.
-              </p>
+              <p className="text-sm text-slate-700 leading-7 font-medium mt-4">{todaysTip}</p>
             </div>
             
             <div className="mt-2 pt-2 border-t border-emerald-200/40 flex justify-between items-center text-emerald-700/20 group-hover:text-emerald-700/40">
-              <span className="text-[9px] font-bold tracking-wider uppercase text-emerald-700/60">Tip of the day</span>
+              <span className="text-[11px] font-bold tracking-wider uppercase text-emerald-700/60">Tip of the day</span>
               <FaLeaf size={16} className="transform -rotate-12 transition-transform duration-500 group-hover:rotate-0 text-emerald-600/40" />
             </div>
           </motion.div>
@@ -320,6 +345,7 @@ plants.map((plant) => (
         </motion.div>
 
       </main>
+      {showUploadModal && (<UploadModal closeModal={() => setShowUploadModal(false)} loggedIn={true}/>)}
     </div>
   );
 }

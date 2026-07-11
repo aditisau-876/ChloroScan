@@ -23,7 +23,8 @@ const Signup = () => {
   setError("");
 };
 
-  const handleSignup = async () => {
+  const handleSignup = async (e) => {
+    e.preventDefault();
     try {
       setLoading(true);
       const res = await signup(form);
@@ -53,7 +54,7 @@ const Signup = () => {
         <div className="flex flex-col justify-center px-8 py-8">
           <h1 className="text-[40px] font-bold text-[#0F172A]">Create Account</h1>
           <p className="text-gray-500 text-lg mt-3">Join ChloroScan today.</p>
-          <div className="mt-6 space-y-4">
+          <form className="mt-6 space-y-4" onSubmit={handleSignup}>
             <div>
               <label className="text-[15px] font-medium text-gray-700">
                 Full Name
@@ -94,10 +95,7 @@ const Signup = () => {
             {error && (<div className="bg-red-50 border border-red-200 text-red-600 rounded-xl p-3 text-sm">{error}</div>)}
             </div>
 
-            <button
-              onClick={handleSignup}
-              disabled={loading}
-              className="w-full h-[40px] bg-green-600 hover:bg-green-700 transition rounded-2xl text-white text-lg font-medium disabled:opacity-50">
+            <button type="submit" disabled={loading} className="w-full h-[40px] bg-green-600 hover:bg-green-700 transition rounded-2xl text-white text-lg font-medium disabled:opacity-50">
               {loading ? "Creating Account..." : "Sign Up"}
               </button>
 
@@ -131,13 +129,14 @@ const Signup = () => {
             <p className="text-center text-gray-500 pt-1 text-sm">
               Already have an account?{" "}
               <button
+                type="button"
                 onClick={() => navigate("/login")}
                 className="text-green-600 font-medium hover:underline">
                 Login
               </button>
             </p>
-          </div>
-        </div>
+          </form>
+        </div> 
       </div>
     </div>
   );
