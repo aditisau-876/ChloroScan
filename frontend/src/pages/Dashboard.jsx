@@ -4,17 +4,18 @@ import { motion } from "framer-motion";
 import { FaPlus, FaTint, FaInfoCircle, FaSun, FaLightbulb, FaArrowRight, FaLeaf } from "react-icons/fa";
 import WeatherWidget from "../components/WeatherWidget";
 import Sidebar from "../components/Sidebar";
-import { getMyPlants } from "../api/auth";
+import { getMyPlants, getReminders } from "../api/auth";
 const user = JSON.parse(localStorage.getItem("user"));
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const [totalPlants, setTotalPlants] = useState(0);
   const [plants, setPlants] = useState([]);
-
+  const [nextReminder, setNextReminder] = useState(null);
   useEffect(() => {
     loadPlants();
-  }, []);
+    loadReminder();
+}, []);
 
   const loadPlants = async () => {
     try {
@@ -26,7 +27,17 @@ export default function Dashboard() {
       console.log(err);
     }
   };
+  const loadReminder = async () => {
+  try {
+    const res = await getReminders();
 
+    if (res.data.length > 0) {
+      setNextReminder(res.data[0]);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -112,33 +123,56 @@ const itemVariants = {
             </div>
           </motion.div>
 
-          <motion.div 
-            variants={itemVariants}
-            whileHover={{ y: -6, boxShadow: "0 12px 30px -10px rgba(0,0,0,0.04)" }}
-            className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between min-h-[200px]">
-            <div>
-              <h2 className="font-bold text-slate-800 text-base">Today's Reminder</h2>
-              <motion.div 
-                whileHover={{ x: 4 }}
-                className="mt-4 bg-emerald-50/30 border border-emerald-50/60 rounded-xl p-2.5 flex items-center gap-3 cursor-pointer">
-                <div className="bg-blue-50 p-2 rounded-lg text-blue-500">
-                  <FaTint size={12} />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-slate-800">Water your Snake Plant</h4>
-                  <p className="text-[10px] text-slate-400 font-semibold mt-0.5">Tomorrow, 08:00 AM</p>
-                </div>
-              </motion.div>
-            </div>
+          <motion.div
+  variants={itemVariants}
+  whileHover={{
+    y: -6,
+    boxShadow: "0 12px 30px -10px rgba(0,0,0,0.04)",
+  }}
+  className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between min-h-[200px]"
+>
+  <div>
+    <h2 className="font-bold text-slate-800 text-base">
+      Today's Reminder
+    </h2>
 
-            <motion.button 
-              whileTap={{ scale: 0.98 }}
-              className="mt-4 w-full bg-[#1E6B3E] hover:bg-[#154d2c] text-white text-xs font-bold py-2.5 rounded-xl shadow-sm transition-all duration-300 cursor-pointer"
-            >
-              View All
-            </motion.button>
-          </motion.div>
+    {nextReminder ? (
+      <motion.div
+        whileHover={{ x: 4 }}
+        onClick={() => navigate("/reminders")}
+        className="mt-4 bg-emerald-50/30 border border-emerald-50/60 rounded-xl p-2.5 flex items-center gap-3 cursor-pointer"
+      >
+        <div className="bg-blue-50 p-2 rounded-lg text-blue-500">
+          <FaTint size={12} />
+        </div>
 
+        <div>
+          <h4 className="text-xs font-bold text-slate-800">
+            {nextReminder.reminder_type} {nextReminder.plant_name}
+          </h4>
+
+          <p className="text-[10px] text-slate-400 font-semibold mt-0.5">
+            {new Date(
+              `${nextReminder.reminder_date}T${nextReminder.reminder_time}`
+            ).toLocaleString()}
+          </p>
+        </div>
+      </motion.div>
+    ) : (
+      <div className="mt-6 text-center text-gray-400 text-sm">
+        🌿 No upcoming reminders
+      </div>
+    )}
+  </div>
+
+  <motion.button
+    whileTap={{ scale: 0.98 }}
+    onClick={() => navigate("/reminders")}
+    className="mt-4 w-full bg-[#1E6B3E] hover:bg-[#154d2c] text-white text-xs font-bold py-2.5 rounded-xl shadow-sm transition-all duration-300 cursor-pointer"
+  >
+    View All
+  </motion.button>
+</motion.div>
           <motion.div 
             variants={itemVariants}
             whileHover={{ y: -6, boxShadow: "0 12px 30px -10px rgba(16,185,129,0.08)" }}
