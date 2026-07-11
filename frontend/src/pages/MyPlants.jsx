@@ -3,8 +3,9 @@ import { getMyPlants } from "../api/auth";
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Sidebar from "../components/Sidebar";
-import { Leaf, Home, Sprout, Bell, LogOut, Sun, Search, BookOpen, ChevronRight, Info } from 'lucide-react';
+import { Leaf, Home, Sprout, Bell, LogOut, Search, BookOpen, ChevronRight, Info } from 'lucide-react';
 import { searchPlants } from "../api/auth";
+import WeatherWidget from "../components/WeatherWidget";
 export default function MyPlants() {
   const [plants, setPlants] = useState([]);
   const navigate = useNavigate();
@@ -75,17 +76,7 @@ const handleSearch = async () => {
             </h2>
             <p className="text-gray-500 mt-1">Manage your plants and keep them healthy.</p>
           </div>
-          <motion.div 
-            whileHover={{ scale: 1.03 }}
-            className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex items-center gap-4 cursor-pointer">
-            <div className="text-amber-500 bg-amber-50 p-2 rounded-xl">
-              <Sun className="w-6 h-6 fill-amber-500/20" />
-            </div>
-            <div>
-              <div className="text-xl font-bold text-gray-800">25°C</div>
-              <div className="text-xs text-gray-400 font-medium">Humidity 60%</div>
-            </div>
-          </motion.div>
+          <WeatherWidget />
         </motion.header>
 
         <motion.section 

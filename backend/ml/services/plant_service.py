@@ -1,7 +1,7 @@
 from sqlalchemy import text
 from backend.database import engine
 from backend.ml.services.related_plants_service import get_related_plants
-
+import re
 
 def get_plant_by_model_name(model_name):
     with engine.begin() as conn:
@@ -116,3 +116,53 @@ def search_plants(query, user_id):
         }
         for row in rows
     ]
+
+def get_recommended_plants(temp, humidity):
+
+    if humidity >= 70:
+        humidity_level = "High"
+    elif humidity >= 40:
+        humidity_level = "Medium"
+    else:
+        humidity_level = "Low"
+
+    with engine.begin() as conn:
+
+        rows = conn.execute(
+            text("""
+                SELECT
+                    plant_name,
+                    scientific_name,
+                    model_name,
+                    image_url,
+                    description,
+                    temperature,
+                    humidity
+                FROM plants
+            """)
+        ).fetchall()
+
+    recommended = []
+
+    for row in rows:
+
+        match = re.findall(r"\d+", row.temperature)
+
+        if len(match) >= 2:
+
+            low = int(match[0])
+            high = int(match[1])
+
+            if low <= temp <= high:
+
+                if row.humidity.lower() == humidity_level.lower():
+
+                    recommended.append({
+                        "plant_name": row.plant_name,
+                        "scientific_name": row.scientific_name,
+                        "model_name": row.model_name,
+                        "image_url": row.image_url,
+                        "description": row.description
+                    })
+
+    return recommended[:5]

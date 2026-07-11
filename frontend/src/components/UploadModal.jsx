@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { FaPlus, FaCheck, FaTimes, FaCamera, FaCloudUploadAlt } from "react-icons/fa";
 
-const UploadModal = ({ closeModal }) => {
+const UploadModal = ({ closeModal, loggedIn = false, }) => {
   const [image, setImage] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState(false);
@@ -91,10 +91,7 @@ const UploadModal = ({ closeModal }) => {
                     <h3 className="text-xs font-bold text-slate-800">Unlock Full Care Profiles</h3>
                     <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed font-medium"> Create an account to track watering histories, trigger custom notifications, and access detailed diagnostics.</p>
                   </div>
-                  <button
-                    onClick={() => navigate("/login")}
-                    className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm hover:shadow transition duration-200 cursor-pointer whitespace-nowrap">Get Started
-                  </button>
+                  {loggedIn ? (<button onClick={handleClose} className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition">Continue</button>) : (<button onClick={() => navigate("/login")} className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition">Get Started</button>)}
                 </div>
               </div>
             </motion.div>
