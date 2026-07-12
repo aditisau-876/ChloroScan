@@ -11,7 +11,7 @@ const WeatherWidget = () => {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
             try {
-                const response = await axios.get(`"http://127.0.0.1:8000"/weather/${lat}/${lon}`);
+                const response = await axios.get(`http://127.0.0.1:8000/weather/${lat}/${lon}`);
                 setWeather(response.data);
                 } catch (error) {console.error(error);}
             },
