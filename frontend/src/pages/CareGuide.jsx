@@ -29,7 +29,7 @@ export default function CareGuide() {
       return;
     }
 
-    fetch(`http://localhost:8000/plant/${encodeURIComponent(modelName)}`)
+    fetch(`https://chloroscan-y5cl.onrender.com/plant/${encodeURIComponent(modelName)}`)
       .then(res => {
         console.log("Response status:", res.status);
         return res.json();
