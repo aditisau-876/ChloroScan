@@ -2,13 +2,20 @@ import tensorflow as tf
 import numpy as np
 from backend.ml.core.image_utils import preprocess_image
 
-model = tf.keras.models.load_model(
-    "backend/ml/models/indoor/indoorplant_model.keras"
-)
-with open("backend/ml/models/indoor/indoorplant_classes.txt", "r") as f:
-    class_names = [line.strip() for line in f.readlines()]
+model = None
+class_names = None
+
+def load_model_once():
+    global model, class_names
+
+    if model is None:
+        print("Loading Indoor plant Model...")
+        model = tf.keras.models.load_model("backend/ml/models/indoor/indoorplant_model.keras")
+        with open("backend/ml/models/indoor/indoorplant_classes.txt","r",) as f:
+            class_names = [line.strip() for line in f.readlines()]
 
 def predict_indoor(image_path):
+    load_model_once()
     try:
         img_array = preprocess_image(image_path)
         prediction = model.predict(img_array, verbose=0)

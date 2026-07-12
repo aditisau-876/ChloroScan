@@ -3,24 +3,34 @@ import numpy as np
 from pathlib import Path
 from backend.ml.core.image_utils import preprocess_image
 
-model = tf.keras.models.load_model(
-    "backend/ml/classifier/category_classifier.keras",
-    compile=False
-)
+model = None
+class_names = None
 
-with open(
-    "backend/ml/classifier/category_classes.txt",
-    "r",
-    encoding="utf-8"
-) as f:
-    class_names = [
-        line.strip()
-        for line in f.readlines()
-        if line.strip()
-    ]
+def load_model_once():
+    global model, class_names
+
+    if model is None:
+        print("Loading Category Classifier...")
+
+        model = tf.keras.models.load_model(
+            "backend/ml/classifier/category_classifier.keras",
+            compile=False
+        )
+
+        with open(
+            "backend/ml/classifier/category_classes.txt",
+            "r",
+            encoding="utf-8"
+        ) as f:
+            class_names = [
+                line.strip()
+                for line in f.readlines()
+                if line.strip()
+            ]
 
 
 def classify_category(image_path):
+    load_model_once()
     try:
         img_array = preprocess_image(image_path)
         prediction = model.predict(img_array, verbose=0)[0]
