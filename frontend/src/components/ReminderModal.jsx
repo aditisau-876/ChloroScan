@@ -19,14 +19,14 @@ export default function ReminderModal({
     e.preventDefault();
 
     onSave({
-  plant_name: formData.plant,
-  reminder_type: formData.type,
-  reminder_date: formData.date,
-  reminder_time: formData.time,
-  repeat_type: formData.repeat,
-  priority: formData.priority,
-  notes: formData.notes,
-});
+      plant_name: formData.plant,
+      reminder_type: formData.type,
+      reminder_date: formData.date,
+      reminder_time: formData.time,
+      repeat_type: formData.repeat,
+      priority: formData.priority,
+      notes: formData.notes,
+    });
 
     closeModal();
   };

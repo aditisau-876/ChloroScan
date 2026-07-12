@@ -37,16 +37,10 @@ def get_plant_details(model_name: str):
     plant = get_plant_by_model_name(model_name)
 
     if not plant:
-        raise HTTPException(
-            status_code=404,
-            detail="Plant not found"
-        )
+        raise HTTPException(status_code=404,detail="Plant not found")
     return plant
 
 
 @router.get("/plants/search")
-def search(
-    query: str = Query(...),
-    user=Depends(get_current_user)
-):
+def search(query: str = Query(...), user=Depends(get_current_user)):
     return search_plants(query, user.id)

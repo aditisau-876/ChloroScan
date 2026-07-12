@@ -42,10 +42,7 @@ export default function CareGuide() {
         try {
           const res = await checkPlant(data.id);
           setIsFavorite(res.data.added);
-
-        } catch (err) {
-          console.error(err);
-        }
+        } catch (err) {console.error(err);}
 
         setLoading(false);
       })
@@ -100,21 +97,15 @@ export default function CareGuide() {
     try {
 
       if (isFavorite) {
-
         await removePlant(plant.id);
         setIsFavorite(false);
-
       } else {
-
         await addPlant(plant.id);
         setIsFavorite(true);
-
       }
 
-    } catch (err) {
-      console.log(err);
-    }
-  };
+    } catch (err) {console.log(err);
+    }};
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -130,102 +121,63 @@ export default function CareGuide() {
   };
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center">
-        Loading...
-      </div>
-    );
-  }
+      <div className="h-screen flex items-center justify-center">Loading...</div>);
+    }
 
   if (!plant) {
     return (
-      <div className="h-screen flex items-center justify-center">
-        Plant not found
-      </div>
-    );
+      <div className="h-screen flex items-center justify-center">Plant not found</div>);
   }
   return (
     <div className="flex h-screen bg-[#F5F8F5]">
-
       <Sidebar />
-
       <div className="flex-1 relative overflow-y-auto">
-
         <div
           className="min-h-screen relative p-8 flex justify-center items-center bg-cover bg-center"
           style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1463936575829-25148e1db1b8?auto=format&fit=crop&q=80&w=1920')",
-          }}
-        >
-          {/* Background Dim Overlay */}
+            backgroundImage:"url('https://images.unsplash.com/photo-1463936575829-25148e1db1b8?auto=format&fit=crop&q=80&w=1920')",}}>
           <div className="absolute inset-0 bg-black/10 backdrop-blur-[2px] z-0" />
 
-          {/* Main Glassmorphism Container */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
             className="w-full max-w-5xl max-h-full bg-white/85 backdrop-blur-xl rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-white/40 p-5 md:p-8 flex flex-col overflow-hidden z-10">
 
-            {/* Top Header Row */}
             <div className="flex items-center mb-6 flex-shrink-0">
-              <img
-                src={logo}
-                alt="ChloroScan Logo"
-                className="h-12 object-contain"
-              />
+              <img src={logo} alt="ChloroScan Logo" className="h-12 object-contain"/>
             </div>
 
-            {/* Hero Section */}
             <div className="flex flex-col md:flex-row gap-6 items-center md:items-start mb-6 flex-shrink-0">
 
-              {/* Plant Image Container */}
-              <motion.div
-                whileHover={{ scale: 1.01 }}
-                className="w-full md:w-64 h-44 md:h-52 bg-slate-50 rounded-2xl overflow-hidden flex-shrink-0 shadow-md border border-white/60 relative group"
-              >
+              <motion.div whileHover={{ scale: 1.01 }} className="w-full md:w-64 h-44 md:h-52 bg-slate-50 rounded-2xl overflow-hidden flex-shrink-0 shadow-md border border-white/60 relative group">
                 <img src={plant.image_url} alt={plant.plant_name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-103" />
               </motion.div>
 
-              {/* Plant Identity Details */}
               <div className="flex-1 text-center md:text-left w-full pt-1">
                 <div className="text-[10px] font-bold text-[#2d8a4e] tracking-widest uppercase mb-0.5">{plant.family}</div>
                 <h1 className="text-2xl md:text-3xl font-extrabold text-[#1b4d3e] tracking-tight mb-0.5">{plant.plant_name}</h1>
                 <p className="text-slate-500 italic text-base mb-4 font-medium">{plant.scientific_name}</p>
 
-                {/* Action Buttons */}
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
                   <motion.button
                     onClick={toggleGarden}
                     whileTap={{ scale: 0.97 }}
-                    className={`font-semibold text-sm px-5 py-2.5 rounded-xl shadow-sm transition-colors duration-200 flex items-center gap-2 ${isFavorite
-                        ? "bg-red-500 hover:bg-red-600 text-white"
-                        : "bg-[#2d8a4e] hover:bg-[#206639] text-white"
-                      }`}
-                  >
+                    className={`font-semibold text-sm px-5 py-2.5 rounded-xl shadow-sm transition-colors duration-200 flex items-center gap-2 ${isFavorite ? "bg-red-500 hover:bg-red-600 text-white" : "bg-[#2d8a4e] hover:bg-[#206639] text-white"}`}>
                     {isFavorite ? "Remove from Garden" : "Add to My Garden"}
-
                     <ChevronRight className="w-3.5 h-3.5 opacity-80" />
                   </motion.button>
 
                   <motion.button
                     whileTap={{ scale: 0.93 }}
                     onClick={toggleGarden}
-                    className={`border p-2.5 rounded-xl transition-all duration-300 shadow-2xs backdrop-blur-xs ${isFavorite
-                        ? "bg-rose-50/90 border-rose-200 text-rose-500"
-                        : "border-slate-200/80 bg-white/50 text-slate-400 hover:text-slate-600 hover:bg-white"
-                      }`}
-                  >
-                    <Heart
-                      className={`w-4 h-4 ${isFavorite ? "fill-current" : "fill-none"
-                        }`}
-                    />
+                    className={`border p-2.5 rounded-xl transition-all duration-300 shadow-2xs backdrop-blur-xs ${isFavorite ? "bg-rose-50/90 border-rose-200 text-rose-500" : "border-slate-200/80 bg-white/50 text-slate-400 hover:text-slate-600 hover:bg-white" }`}>
+                    <Heart className={`w-4 h-4 ${isFavorite ? "fill-current" : "fill-none" }`}/>
                   </motion.button>
                 </div>
               </div>
             </div>
 
-            {/* Navigation Tabs (Automatically fits the new Medicinal Use option seamlessly) */}
             <div className="border-b border-slate-200/60 mb-5 relative flex-shrink-0">
               <nav className="flex gap-6 -mb-px overflow-x-auto no-scrollbar">
                 {tabs.map((tab) => {
@@ -251,7 +203,6 @@ export default function CareGuide() {
               </nav>
             </div>
 
-            {/* Content Window */}
             <div className="flex-1 overflow-y-auto no-scrollbar min-h-0">
               <AnimatePresence mode="wait">
                 {activeTab === 'Care Guide' && (
@@ -282,7 +233,6 @@ export default function CareGuide() {
                   </motion.div>
                 )}
 
-                {/* Explicit dynamic condition for your new Medicinal Use Tab */}
                 {activeTab === 'Medicinal Use' && (
                   <motion.div
                     key="medicinal-use"
@@ -296,7 +246,6 @@ export default function CareGuide() {
                   </motion.div>
                 )}
 
-                {/* General fallback container for remaining loading sub-tabs */}
                 {activeTab === "Growth Info" && (
                   <motion.div
                     key="growth-info"
@@ -305,39 +254,23 @@ export default function CareGuide() {
                     exit={{ opacity: 0 }}
                     className="bg-white/70 rounded-xl p-6 shadow-sm"
                   >
-                    <h2 className="text-2xl font-bold text-[#1b4d3e] mb-4">
-                      Growth Information
-                    </h2>
-
-                    <p className="text-slate-700 leading-relaxed mb-5">
-                      {plant.description}
-                    </p>
-
+                    <h2 className="text-2xl font-bold text-[#1b4d3e] mb-4">Growth Information</h2>
+                    <p className="text-slate-700 leading-relaxed mb-5">{plant.description}</p>
                     <div className="flex items-center gap-3">
-                      <span className="font-semibold text-[#1b4d3e]">
-                        🌸 Bloom Time:
-                      </span>
-
+                      <span className="font-semibold text-[#1b4d3e]">Bloom Time:</span>
                       <span>{plant.bloom_time}</span>
                     </div>
                   </motion.div>
                 )}
-
                 {activeTab === "Problems" && (
                   <motion.div
                     key="problems"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="bg-white/70 rounded-xl p-6 shadow-sm"
-                  >
-                    <h2 className="text-2xl font-bold text-[#1b4d3e] mb-4">
-                      Common Problems
-                    </h2>
-
-                    <p className="text-slate-700 leading-relaxed">
-                      {plant.common_diseases}
-                    </p>
+                    className="bg-white/70 rounded-xl p-6 shadow-sm">
+                    <h2 className="text-2xl font-bold text-[#1b4d3e] mb-4">Common Problems</h2>
+                    <p className="text-slate-700 leading-relaxed">{plant.common_diseases}</p>
                   </motion.div>
                 )}
                 {activeTab === "Similar Plants" && (
@@ -365,19 +298,9 @@ export default function CareGuide() {
                         }}
                         className="bg-white rounded-xl p-4 shadow cursor-pointer transition-all duration-300 hover:shadow-lg"
                       >
-                        <img
-                          src={item.image_url}
-                          alt={item.plant_name}
-                          className="h-32 w-full object-cover rounded-lg"
-                        />
-
-                        <h3 className="mt-3 font-bold text-[#1b4d3e]">
-                          {item.plant_name}
-                        </h3>
-
-                        <p className="text-sm italic text-gray-500">
-                          {item.scientific_name}
-                        </p>
+                        <img src={item.image_url} alt={item.plant_name} className="h-32 w-full object-cover rounded-lg"/>
+                        <h3 className="mt-3 font-bold text-[#1b4d3e]">{item.plant_name}</h3>
+                        <p className="text-sm italic text-gray-500">{item.scientific_name}</p>
                       </motion.div>
                     ))}
                   </motion.div>

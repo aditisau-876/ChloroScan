@@ -27,20 +27,11 @@ def create_reminder(
     return new_reminder
 
 
-def get_user_reminders(
-    db: Session,
-    user_id: int
-):
+def get_user_reminders(db: Session,user_id: int):
     return (
         db.query(Reminder)
-        .filter(
-            Reminder.user_id == user_id,
-            Reminder.is_completed == False
-        )
-        .order_by(
-            Reminder.reminder_date,
-            Reminder.reminder_time
-        )
+        .filter(Reminder.user_id == user_id, Reminder.is_completed == False)
+        .order_by(Reminder.reminder_date, Reminder.reminder_time)
         .all()
     )
 
@@ -52,10 +43,7 @@ def delete_reminder(
 ):
     reminder = (
         db.query(Reminder)
-        .filter(
-            Reminder.id == reminder_id,
-            Reminder.user_id == user_id
-        )
+        .filter(Reminder.id == reminder_id, Reminder.user_id == user_id)
         .first()
     )
 
@@ -68,29 +56,22 @@ def delete_reminder(
 def complete_reminder(db, reminder_id, user_id):
     reminder = (
         db.query(Reminder)
-        .filter(
-            Reminder.id == reminder_id,
-            Reminder.user_id == user_id
-        )
+        .filter(Reminder.id == reminder_id, Reminder.user_id == user_id)
         .first()
     )
 
     if not reminder:
         return None
 
-    # One-time reminder
     if reminder.repeat_type == "None":
         reminder.is_completed = True
 
-    # Daily reminder
     elif reminder.repeat_type == "Daily":
         reminder.reminder_date += timedelta(days=1)
 
-    # Weekly reminder
     elif reminder.repeat_type == "Weekly":
         reminder.reminder_date += timedelta(days=7)
 
-    # Monthly reminder
     elif reminder.repeat_type == "Monthly":
         reminder.reminder_date += relativedelta(months=1)
 

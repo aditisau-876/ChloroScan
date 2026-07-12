@@ -54,10 +54,7 @@ def get_plant_by_model_name(model_name):
         "image_url": row.image_url
     }
 
-    plant["similar_plants"] = get_related_plants(
-        family=plant["family"],
-        current_plant_id=plant["id"]
-    )
+    plant["similar_plants"] = get_related_plants(family=plant["family"],current_plant_id=plant["id"])
 
     return plant
 
