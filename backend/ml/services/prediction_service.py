@@ -1,9 +1,4 @@
 from backend.ml.classifier.category_classifier import classify_category
-from backend.ml.predictors.fruit_predictor import predict_fruit
-from backend.ml.predictors.flower_predictor import predict_flower
-from backend.ml.predictors.vegetable_predictor import predict_vegetable
-from backend.ml.predictors.medicinal_predictor import predict_medicinal
-from backend.ml.predictors.indoor_predictor import predict_indoor
 from backend.ml.services.plant_service import get_plant_by_model_name
 from backend.ml.services.related_plants_service import get_similar_plants,get_related_plants
 
@@ -68,15 +63,30 @@ def build_response(result,category,response_type,classifier_confidence=None,cate
         response["categories_checked"] = categories_checked
     return response
 
-def run_category_model(category,file_path):
+def run_category_model(category, file_path):
+
     if category == "Fruit":
+        from backend.ml.predictors.fruit_predictor import predict_fruit
         return predict_fruit(file_path)
+
     elif category == "Flower":
+        from backend.ml.predictors.flower_predictor import predict_flower
         return predict_flower(file_path)
+
     elif category == "Vegetable":
+        from backend.ml.predictors.vegetable_predictor import predict_vegetable
         return predict_vegetable(file_path)
+
     elif category == "Medicinal":
+        from backend.ml.predictors.medicinal_predictor import predict_medicinal
         return predict_medicinal(file_path)
+
     elif category == "Indoor":
+        from backend.ml.predictors.indoor_predictor import predict_indoor
         return predict_indoor(file_path)
-    return {"success": False,"plant_name": "Unknown","confidence": 0}
+
+    return {
+        "success": False,
+        "plant_name": "Unknown",
+        "confidence": 0
+    }
