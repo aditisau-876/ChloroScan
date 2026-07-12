@@ -253,12 +253,9 @@ const loadWeatherAdvice = () => {
                   {loadingId === reminder.id ? "Updating..." : "Mark Done"}
                 </motion.button>
                 <motion.button
-  whileTap={{ scale: 0.95 }}
-  onClick={() => handleDelete(reminder.id)}
-  className="border border-red-200 text-red-600 hover:bg-red-50 text-xs px-4 py-2 rounded-xl"
->
-Delete
-</motion.button>
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => handleDelete(reminder.id)}
+                  className="border border-red-200 text-red-600 hover:bg-red-50 text-xs px-4 py-2 rounded-xl">Delete</motion.button>
                 </motion.div>
                 ))}
                   </motion.div>

@@ -37,13 +37,13 @@ const UploadModal = ({ closeModal, loggedIn = false, }) => {
     processFile(file);
   };
   const handleClose = () => {
-  setImage(null);
-  setPrediction(null);
-  setResult(false);
-  setAnalyzing(false);
+    setImage(null);
+    setPrediction(null);
+    setResult(false);
+    setAnalyzing(false);
 
-  closeModal();
-};
+    closeModal();
+  };
 
   return (
     <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center z-50 px-4 select-none">

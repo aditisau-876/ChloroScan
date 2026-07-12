@@ -8,18 +8,10 @@ const Signup = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: ""
-  });
+  const [form, setForm] = useState({name: "",email: "",password: ""});
 
   const handleChange = (e) => {
-  setForm({
-    ...form,
-    [e.target.name]: e.target.value
-  });
-
+  setForm({...form,[e.target.name]: e.target.value});
   setError("");
 };
 
@@ -56,9 +48,7 @@ const Signup = () => {
           <p className="text-gray-500 text-lg mt-3">Join ChloroScan today.</p>
           <form className="mt-6 space-y-4" onSubmit={handleSignup}>
             <div>
-              <label className="text-[15px] font-medium text-gray-700">
-                Full Name
-              </label>
+              <label className="text-[15px] font-medium text-gray-700">Full Name</label>
               <input
                 name="name"
                 value={form.name}
@@ -99,13 +89,7 @@ const Signup = () => {
               {loading ? "Creating Account..." : "Sign Up"}
               </button>
 
-            <div className="flex items-center gap-4 mt-1">
-
-              <div className="flex-1 h-[1px] bg-gray-200"></div>
-              <p className="text-gray-400">or</p>
-              <div className="flex-1 h-[1px] bg-gray-200"></div>
-
-            </div>
+            <div className="flex items-center gap-4 mt-1"><div className="flex-1 h-[1px] bg-gray-200"></div><p className="text-gray-400">or</p><div className="flex-1 h-[1px] bg-gray-200"></div></div>
 
             <div className="flex justify-center">
             <GoogleLogin
@@ -128,11 +112,7 @@ const Signup = () => {
 
             <p className="text-center text-gray-500 pt-1 text-sm">
               Already have an account?{" "}
-              <button
-                type="button"
-                onClick={() => navigate("/login")}
-                className="text-green-600 font-medium hover:underline">
-                Login
+              <button type="button" onClick={() => navigate("/login")} className="text-green-600 font-medium hover:underline">Login
               </button>
             </p>
           </form>

@@ -24,12 +24,7 @@ def predict(file_path):
         result = run_category_model(category1,file_path)
         if not result["success"]:
             return {"success": False,"message":"Prediction failed"}
-        return build_response(
-            result=result,
-            category=category1,
-            response_type="single_match",
-            classifier_confidence=confidence1
-        )
+        return build_response(result=result, category=category1, response_type="single_match", classifier_confidence=confidence1)
 
     candidate_categories = []
     for pred in predictions:
@@ -45,13 +40,7 @@ def predict(file_path):
         if len(model_results) == 0:
             return {"success": False,"message":"All category models failed"}
         best_result = max(model_results,key=lambda x: x["confidence"])
-        return build_response(
-            result=best_result,
-            category="Multiple",
-            response_type="multi_match",
-            categories_checked=
-            candidate_categories
-        )
+        return build_response(result=best_result,category="Multiple",response_type="multi_match",categories_checked=candidate_categories)
     return {"success": True,"type": "unknown","message":"Plant could not be identified confidently","similar_plants": []}
 
 def build_response(result,category,response_type,classifier_confidence=None,categories_checked=None):
@@ -90,8 +79,4 @@ def run_category_model(category,file_path):
         return predict_medicinal(file_path)
     elif category == "Indoor":
         return predict_indoor(file_path)
-    return {
-        "success": False,
-        "plant_name": "Unknown",
-        "confidence": 0
-    }
+    return {"success": False,"plant_name": "Unknown","confidence": 0}

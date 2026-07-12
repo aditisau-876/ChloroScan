@@ -41,36 +41,10 @@ export default function Sidebar() {
     {open && (
       <div
         className="fixed inset-0 bg-black/40 z-40 lg:hidden"onClick={() => setOpen(false)}/>)}
-    <aside
-      className={`
-    fixed lg:static
-    top-0 left-0
-    h-screen lg:h-screen
-    w-64
-    bg-[#0F3A20]
-    text-white
-    p-5
-    flex
-    flex-col
-    justify-between
-    flex-shrink-0
-    shadow-xl
-    z-50
-    transform
-    transition-transform
-    duration-300
-        ${
-          open
-            ? "translate-x-0"
-            : "-translate-x-full lg:translate-x-0"
-        }
-      `}
-    >
+    <aside className={`fixed lg:static top-0 left-0 h-screen lg:h-screen w-64 bg-[#0F3A20] text-white p-5 flex flex-col justify-between flex-shrink-0 shadow-xl z-50 transform transition-transform duration-300
+        ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
         <div className="lg:hidden flex justify-end mb-4">
-    <button
-      onClick={() => setOpen(false)}
-      className="text-white hover:text-green-300"
-    >
+    <button onClick={() => setOpen(false)} className="text-white hover:text-green-300">
       <FaTimes size={20} />
     </button>
   </div>
@@ -78,9 +52,7 @@ export default function Sidebar() {
       <div>
         <div className="flex items-center gap-3 px-2 py-2">
           <FaLeaf className="text-xl text-green-400 -rotate-12" />
-          <h1 className="text-xl font-bold tracking-tight">
-            ChloroScan
-          </h1>
+          <h1 className="text-xl font-bold tracking-tight">ChloroScan</h1>
         </div>
 
         <nav className="mt-8 flex flex-col gap-1.5">

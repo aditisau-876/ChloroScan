@@ -14,7 +14,6 @@ def weather(lat: float, lon: float):
 async def weather_advice(lat: float, lon: float):
 
     weather = get_weather(lat, lon)
-
     temp = weather["temperature"]
     humidity = weather["humidity"]
     condition = weather["weather"].lower()
@@ -38,12 +37,7 @@ async def weather_advice(lat: float, lon: float):
 
 @router.get("/recommended-plants/{lat}/{lon}")
 def recommended_plants(lat: float, lon: float):
-
     weather = get_weather(lat, lon)
-
-    plants = get_recommended_plants(
-        weather["temperature"],
-        weather["humidity"]
-    )
+    plants = get_recommended_plants(weather["temperature"],weather["humidity"])
 
     return plants

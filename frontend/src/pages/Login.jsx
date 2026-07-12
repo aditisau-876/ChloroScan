@@ -49,11 +49,7 @@ const Login = () => {
     <div className="min-h-screen bg-[#F9FBF8] flex items-center justify-center px-6 py-6">
       <div className="w-full max-w-5xl h-[640px] bg-white rounded-[32px] overflow-hidden shadow-lg grid lg:grid-cols-2">
         <div className="relative hidden lg:block">
-          <img
-            src="https://images.unsplash.com/photo-1483794344563-d27a8d18014e?q=80&w=1200&auto=format&fit=crop"
-            alt="Plant"
-            className="w-full h-full object-cover"
-          />
+          <img src="https://images.unsplash.com/photo-1483794344563-d27a8d18014e?q=80&w=1200&auto=format&fit=crop" alt="Plant" className="w-full h-full object-cover"/>
           <div className="absolute inset-0 bg-green-900/45"></div>
           <div className="absolute bottom-10 left-8 right-8 text-white">
             <h2 className="text-4xl font-bold leading-tight">“The best time to plant a tree was 20 years ago. The second best time is now.”</h2>
@@ -61,15 +57,8 @@ const Login = () => {
         </div>
 
         <div className="px-10 py-8 flex flex-col justify-center">
-
-          <h1 className="text-4xl font-bold text-gray-900">
-            Welcome Back!
-          </h1>
-
-          <p className="text-gray-500 mt-2 text-base">
-            Login to access your plant care guide.
-          </p>
-
+          <h1 className="text-4xl font-bold text-gray-900">Welcome Back!</h1>
+          <p className="text-gray-500 mt-2 text-base">Login to access your plant care guide.</p>
         <form className="mt-7" onSubmit={handleLogin}>
           <div><label className="text-gray-700 font-medium">Email</label>
             <input

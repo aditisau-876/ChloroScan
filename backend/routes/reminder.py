@@ -19,7 +19,6 @@ def add_reminder(reminder: ReminderCreate,db: Session = Depends(get_db),user=Dep
 def get_reminders(db: Session = Depends(get_db),user=Depends(get_current_user)):
     return get_user_reminders(db,user.id)
 
-
 @router.delete("/{reminder_id}")
 def remove_reminder(reminder_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
     reminder = delete_reminder(db, reminder_id, user.id)
@@ -28,22 +27,11 @@ def remove_reminder(reminder_id: int, db: Session = Depends(get_db), user=Depend
     return {"message": "Reminder not found"}
 
 @router.put("/{reminder_id}/complete")
-def mark_complete(
-    reminder_id: int,
-    db: Session = Depends(get_db),
-    user=Depends(get_current_user)
-):
-    reminder = complete_reminder(
-        db,
-        reminder_id,
-        user.id
-    )
+def mark_complete(reminder_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    reminder = complete_reminder(db, reminder_id, user.id)
 
     if not reminder:
-        raise HTTPException(
-            status_code=404,
-            detail="Reminder not found"
-        )
+        raise HTTPException(status_code=404, detail="Reminder not found")
 
     return reminder
 
