@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://127.0.0.1:8000",
+  baseURL: "https://chloroscan.onrender.com",
 });
 
 export const signup = (data) => {return API.post("/auth/signup", data);};

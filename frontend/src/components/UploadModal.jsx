@@ -19,7 +19,7 @@ const UploadModal = ({ closeModal, loggedIn = false, }) => {
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const response = await axios.post("http://127.0.0.1:8000/predict",formData,{headers: {"Content-Type": "multipart/form-data"}});
+      const response = await axios.post("https://chloroscan.onrender.com/predict",formData,{headers: {"Content-Type": "multipart/form-data"}});
       console.log(response.data);
       setPrediction(response.data);
       setAnalyzing(false);
