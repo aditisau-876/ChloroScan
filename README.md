@@ -283,15 +283,15 @@ Configure these variables separately in the relevant deployment platform. Never 
 
 ## ☁️ Deployment
 
-### Frontend — Vercel
+### Frontend — Render
 
-1. Import the GitHub repository into Vercel.
+1. Import the GitHub repository into Render.
 2. Set the frontend directory as the project root if your repository contains separate frontend and backend folders.
 3. Configure the required frontend environment variables, if applicable.
 4. Deploy the application.
 5. Update the frontend API configuration to use the deployed Railway backend URL.
 
-### Backend — Railway
+### Backend — Render
 
 1. Create a Railway project and connect the GitHub repository.
 2. Configure the backend root directory to match the repository structure.
