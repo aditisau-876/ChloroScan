@@ -118,8 +118,8 @@ When the classifier cannot identify a category confidently, the application can 
 
 ### Deployment
 
-* Vercel — frontend
-* Railway — backend
+* Render — frontend
+* Render — backend
 
 ---
 
