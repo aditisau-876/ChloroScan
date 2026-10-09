@@ -12,8 +12,16 @@ from backend.routes.plantnet import router as plantnet_router
 
 app = FastAPI()
 
-app.add_middleware(CORSMiddleware,allow_origins=["http://localhost:5173",
-                                                 "https://chloroscan-1-ciqc.onrender.com"],allow_credentials=True,allow_methods=["*"],allow_headers=["*"],)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "https://chloroscan-1.onrender.com",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(auth_router)
 app.include_router(plant_router)
